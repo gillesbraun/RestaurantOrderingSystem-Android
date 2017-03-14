@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">ROS Android</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="product_single_noallergens">No Allergens saved for this product.</string>
+    <string name="product_single_button_addToOrder">Add to order</string>
+    <string name="productcategories_textView_waiterName">You are creating an order as: %s</string>
+    <string name="productcategories_textView_table">Creating an order for table: %s</string>
+
+    <string name="waiterhome_textView_waiterName">You are using this device as: %s</string>
+    <string name="waiterhome_textView_createNewOrder">Create a new order</string>
+    <string name="content_product_textView_allergenTitle">List of Allergens</string>
+</resources>

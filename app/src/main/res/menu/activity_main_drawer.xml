@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_menu_manage"
+        android:title="Home" />
+
+    <item android:title="Waiter">
+        <menu>
+            <item
+                android:id="@+id/nav_waiter"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="Waiter Mode" />
+            <item
+                android:id="@+id/nav_change_waiter"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Change Waiter" />
+        </menu>
+    </item>
+    <item android:title="Order Display">
+        <menu>
+            <item
+                android:id="@+id/nav_orders_view"
+                android:icon="@drawable/ic_menu_share"
+                android:title="View Orders" />
+        </menu>
+    </item>
+</menu>

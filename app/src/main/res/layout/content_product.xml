@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:minWidth="3500dp"
+    android:minHeight="200dp"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:text="PlaceHolder"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/content_product_title" />
+
+    <TextView
+        android:text="-.--€"
+        android:textSize="18sp"
+        style="@style/Base.TextAppearance.AppCompat.Subhead"
+        android:layout_marginBottom="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/content_product_price" />
+
+    <TextView
+        android:text="@string/content_product_textView_allergenTitle"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/content_product_allergen_title"/>
+
+    <ListView
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/content_product_allergen_listView"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp">
+
+        <Button
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:id="@+id/content_product_button_addToOrder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/product_single_button_addToOrder"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/content_product_textView_numberOfItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:text="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_alignBaseline="@+id/content_product_button_addToOrder"
+            android:layout_alignBottom="@+id/content_product_button_addToOrder"
+            android:layout_toLeftOf="@+id/content_product_button_addToOrder"
+            android:layout_toStartOf="@+id/content_product_button_addToOrder" />
+
+        <Button
+            style="@style/Base.Widget.AppCompat.Button.Small"
+            android:id="@+id/content_product_button_increaseItemCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/content_product_textView_numberOfItems"
+            android:layout_toStartOf="@+id/content_product_textView_numberOfItems" />
+
+        <Button
+            style="@style/Base.Widget.AppCompat.Button.Small"
+            android:enabled="false"
+            android:id="@+id/content_product_button_decreaseItemCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/content_product_button_increaseItemCount"
+            android:layout_toStartOf="@+id/content_product_button_increaseItemCount" />
+    </RelativeLayout>
+</LinearLayout>
