@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="Who are you?"
+        android:text="@string/please_select_your_name_from_the_list"
         android:textSize="23sp"
         android:layout_width="match_parent"
         android:layout_marginTop="30dp"
