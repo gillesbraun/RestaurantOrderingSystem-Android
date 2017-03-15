@@ -26,7 +26,7 @@ import lu.btsi.bragi.ros.models.message.MessageType;
  */
 
 public class ConnectionManager implements ConnectionCallback, MessageCallbackHandler {
-    private String host = "192.168.0.50";
+    private String host = "192.168.0.77";
     private URI url = URI.create("ws://"+host+":8887");
     private Client client;
     private boolean isConnected = false;
@@ -79,9 +79,13 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    List<Message> sendNext = new ArrayList<>();
                     for(Iterator<Message> it = unsentMessages.iterator(); it.hasNext();) {
                         Message message = it.next();
+                        sendNext.add(message);
                         it.remove();
+                    }
+                    for (Message message : sendNext) {
                         send(message);
                     }
                     queueRunning = false;
