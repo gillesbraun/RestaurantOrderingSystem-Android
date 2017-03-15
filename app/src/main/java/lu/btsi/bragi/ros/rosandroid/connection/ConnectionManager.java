@@ -125,6 +125,7 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
             });
         } else {
             Log.e("ROS", "SOMTHING WRONG");
+            Log.e("ROS", text);
         }
     }
 }

@@ -66,60 +66,7 @@ public class WaiterProductsFragment extends Fragment implements AdapterView.OnIt
 
         SingleProductDialog productDialog = new SingleProductDialog();
         productDialog.setProduct(product);
-        productDialog.show(getFragmentManager(), "singleProductDialog");
-/*
-        Optional<ProductLocalized> productTranslation = StreamSupport.stream(product.getProductLocalized())
-                .filter(pL -> pL.getLanguageCode().equals(language))
-                .findFirst();
-
-        List<AllergenLocalized> allergens = StreamSupport.stream(product.getProductAllergen())
-                .map(ProductAllergen::getAllergen)
-                .flatMap(allergen -> StreamSupport.stream(allergen.getAllergenLocalized())
-                        .filter(aL -> aL.getLanguageCode().equals(language))
-                )
-                .collect(Collectors.toList());
-
-        Dialog showProductSingle = new Dialog(view.getContext());
-        showProductSingle.setContentView(R.layout.content_product);
-        TextView title = (TextView) showProductSingle.findViewById(R.id.content_product_title);
-        TextView priceTextField = (TextView) showProductSingle.findViewById(R.id.content_product_price);
-
-        String price = String.format(Locale.GERMANY, "%.2f €", product.getPrice().doubleValue());
-        priceTextField.setText(price);
-
-        ListView allergenListView = (ListView) showProductSingle.findViewById(R.id.content_product_allergen_listView);
-        if(allergens.size() == 0) {
-            TextView allergensTitle = (TextView)showProductSingle.findViewById(R.id.content_product_allergen_title);
-            allergensTitle.setVisibility(View.GONE);
-        }
-        ListAdapter allergenAdapter = new BaseAdapter() {
-            @Override
-            public int getCount() {
-                return allergens.size();
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return allergens.get(position);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return 0;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                if(convertView == null)
-                    convertView = inflater.inflate(R.layout.single_allergen, parent, false);
-                TextView single = (TextView)convertView.findViewById(R.id.single_allergen_label);
-                single.setText(allergens.get(position).getLabel());
-                return convertView;
-            }
-        };
-        allergenListView.setAdapter(allergenAdapter);
-        showProductSingle.show();*/
+        ((MainActivity)getActivity()).showDialogFragment(productDialog);
     }
 
     public void setProducts(List<Product> products) {

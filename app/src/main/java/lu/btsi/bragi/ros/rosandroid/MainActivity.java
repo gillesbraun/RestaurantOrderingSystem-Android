@@ -4,7 +4,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -35,6 +40,7 @@ public class MainActivity extends AppCompatActivity
 
     List<Fragment> fragments = new ArrayList<>(3);
     private FragNavController fragNavController;
+    private FloatingActionButton fab_oderSubmit;
 
     public MainActivity() {
         ConnectionManager.init(this);
@@ -68,6 +74,10 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        fab_oderSubmit = (FloatingActionButton)findViewById(R.id.fab_order_submit);
+        fab_oderSubmit.setVisibility(View.GONE);
+        fab_oderSubmit.setOnClickListener(fabSendOrderPressed);
+
         fragNavController = new FragNavController(savedInstanceState, getSupportFragmentManager(), R.id.content_main, fragments, 0);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -76,12 +86,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        /*DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }*/
+        }
+
         if(fragNavController.isRootFragment()) {
             new MaterialDialog.Builder(this)
                     .title("Are you sure you want to exit?")
@@ -169,5 +178,29 @@ public class MainActivity extends AppCompatActivity
 
     public void switchTab(int index) throws IndexOutOfBoundsException {
         fragNavController.switchTab(index);
+    }
+
+    public void updateFabVisibility() {
+        OrderManager manager = OrderManager.getInstance();
+        if(manager.hasOpenOrder() && manager.orderHasProducts()) {
+            fab_oderSubmit.setVisibility(View.VISIBLE);
+        } else {
+            fab_oderSubmit.setVisibility(View.GONE);
+        }
+    }
+
+    private View.OnClickListener fabSendOrderPressed = view -> {
+        OrderManager.getInstance().sendToServer();
+        updateFabVisibility();
+        Snackbar.make(view, "Order has been sent to server", BaseTransientBottomBar.LENGTH_LONG).show();
+        fragNavController.clearStack();
+    };
+
+    public void showDialogFragment(@Nullable DialogFragment dialogFragment) {
+        fragNavController.showDialogFragment(dialogFragment);
+    }
+
+    public void clearDialogFragment() {
+        fragNavController.clearDialogFragment();
     }
 }

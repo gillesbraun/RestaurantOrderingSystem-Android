@@ -101,6 +101,7 @@ public class WaiterProductCategoriesFragment extends Fragment {
     }
 
     private void updateView() {
+        ((MainActivity)getActivity()).updateFabVisibility();
         if(products != null && categories != null && getView() != null) {
             waiterName.setText(String.format(Locale.GERMAN, waiterString, Config.getInstance().getWaiter().getName()));
 

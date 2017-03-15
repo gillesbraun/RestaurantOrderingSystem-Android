@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -65,11 +67,14 @@ public class WaiterHomeFragment extends Fragment {
         new MaterialDialog.Builder(getContext())
                 .title("Select a Table")
                 .items(tables)
-                .itemsCallback((dialog, itemView, position, text) -> {
+                .itemsCallbackSingleChoice(-1, (dialog, itemView, position, text) -> {
+                    Log.e("ROS", "position: "+position + ". got: "+tables.get(position));
                     OrderManager.getInstance().createNew().setTable(tables.get(position));
                     ((MainActivity)getActivity()).pushFragment(new WaiterProductCategoriesFragment());
+                    return true;
                 })
                 .negativeText("Cancel")
+                .positiveText("Choose")
                 .build()
                 .show();
     }

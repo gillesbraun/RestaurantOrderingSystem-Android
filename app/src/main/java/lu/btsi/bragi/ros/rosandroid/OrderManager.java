@@ -4,6 +4,7 @@ import org.jooq.types.UInteger;
 
 import java.util.ArrayList;
 
+import java8.util.stream.StreamSupport;
 import lu.btsi.bragi.ros.models.message.Message;
 import lu.btsi.bragi.ros.models.message.MessageType;
 import lu.btsi.bragi.ros.models.pojos.Order;
@@ -35,20 +36,37 @@ public class OrderManager {
     }
 
     public OrderManager addProductToOrder(Product product, UInteger quantity) {
-        ProductPriceForOrder productPriceForOrder = new ProductPriceForOrder();
-        productPriceForOrder.setProductId(product.getId());
-        productPriceForOrder.setPricePerProduct(product.getPrice());
-        productPriceForOrder.setQuantity(quantity);
+        if(isProductInOrder(product)) {
+            StreamSupport.stream(order.getProductPriceForOrder())
+                    .filter(ppfo -> ppfo.getProductId().equals(product.getId()))
+                    .findFirst().ifPresent(ppfo -> {
+                ppfo.setQuantity(UInteger.valueOf(ppfo.getQuantity().longValue() + quantity.longValue()));
+            });
+        } else {
+            ProductPriceForOrder productPriceForOrder = new ProductPriceForOrder();
+            productPriceForOrder.setProductId(product.getId());
+            productPriceForOrder.setPricePerProduct(product.getPrice());
+            productPriceForOrder.setQuantity(quantity);
 
-        if(order.getProductPriceForOrder() == null) {
-            order.setProductPriceForOrder(new ArrayList<>());
+            if(order.getProductPriceForOrder() == null) {
+                order.setProductPriceForOrder(new ArrayList<>());
+            }
+            order.getProductPriceForOrder().add(productPriceForOrder);
         }
-        order.getProductPriceForOrder().add(productPriceForOrder);
         return ourInstance;
+    }
+
+    private boolean isProductInOrder(Product product) {
+        return order != null && order.getProductPriceForOrder() != null && StreamSupport.stream(order.getProductPriceForOrder())
+                .anyMatch(ppfo -> ppfo.getProductId().equals(product.getId()));
     }
 
     public boolean hasOpenOrder() {
         return order != null;
+    }
+
+    boolean orderHasProducts() {
+        return order != null && order.getProductPriceForOrder() != null && order.getProductPriceForOrder().size() > 0;
     }
 
     public OrderManager createNew() {
@@ -58,6 +76,7 @@ public class OrderManager {
 
     public OrderManager setTable(Table table) {
         order.setTable(table);
+        order.setTableId(table.getId());
         return ourInstance;
     }
 
