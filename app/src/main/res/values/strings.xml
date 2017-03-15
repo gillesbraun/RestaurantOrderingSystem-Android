@@ -14,4 +14,5 @@
     <string name="waiterhome_textView_createNewOrder">Create a new order</string>
     <string name="content_product_textView_allergenTitle">List of Allergens</string>
     <string name="please_select_your_name_from_the_list">Please select your name from the list</string>
+    <string name="dialog_order_edit_title">Edit Items in Order</string>
 </resources>

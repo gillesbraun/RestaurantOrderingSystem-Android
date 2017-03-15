@@ -68,7 +68,6 @@ public class WaiterHomeFragment extends Fragment {
                 .title("Select a Table")
                 .items(tables)
                 .itemsCallbackSingleChoice(-1, (dialog, itemView, position, text) -> {
-                    Log.e("ROS", "position: "+position + ". got: "+tables.get(position));
                     OrderManager.getInstance().createNew().setTable(tables.get(position));
                     ((MainActivity)getActivity()).pushFragment(new WaiterProductCategoriesFragment());
                     return true;

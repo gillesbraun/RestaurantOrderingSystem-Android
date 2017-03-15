@@ -45,6 +45,7 @@ public class OrderManager {
         } else {
             ProductPriceForOrder productPriceForOrder = new ProductPriceForOrder();
             productPriceForOrder.setProductId(product.getId());
+            productPriceForOrder.setProduct(product);
             productPriceForOrder.setPricePerProduct(product.getPrice());
             productPriceForOrder.setQuantity(quantity);
 
@@ -82,5 +83,9 @@ public class OrderManager {
 
     public Table getTable() {
         return order.getTable();
+    }
+
+    public Order getOrder() {
+        return order;
     }
 }

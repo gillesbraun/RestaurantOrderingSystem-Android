@@ -11,4 +11,11 @@
         android:title="Clear Cache"
         app:showAsAction="never"
         />
+    <item
+        android:id="@+id/menu_edit_order"
+        android:visible="false"
+        android:title="Edit Order"
+        android:icon="@mipmap/ic_edit_white_24dp"
+        app:showAsAction="always"
+        />
 </menu>

@@ -32,6 +32,8 @@ import java.util.List;
 
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionCallback;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
+import lu.btsi.bragi.ros.rosandroid.waiter.OrderEditDialogFragment;
+import lu.btsi.bragi.ros.rosandroid.waiter.SingleProductDialog;
 import lu.btsi.bragi.ros.rosandroid.waiter.WaiterChooseFragment;
 import lu.btsi.bragi.ros.rosandroid.waiter.WaiterHomeFragment;
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     List<Fragment> fragments = new ArrayList<>(3);
     private FragNavController fragNavController;
     private FloatingActionButton fab_oderSubmit;
+    private MenuItem menu_edit_order;
 
     public MainActivity() {
         ConnectionManager.init(this);
@@ -78,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         fab_oderSubmit.setVisibility(View.GONE);
         fab_oderSubmit.setOnClickListener(fabSendOrderPressed);
 
-        fragNavController = new FragNavController(savedInstanceState, getSupportFragmentManager(), R.id.content_main, fragments, 0);
+        fragNavController = new FragNavController(savedInstanceState, getSupportFragmentManager(), R.id.content_main, fragments, FragNavController.TAB1);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -108,8 +111,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        menu_edit_order = menu.findItem(R.id.menu_edit_order);
+        menu_edit_order.setOnMenuItemClickListener(menuEditOrderPressed);
+
         return true;
     }
 
@@ -191,6 +199,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             fab_oderSubmit.setVisibility(View.GONE);
         }
+        menu_edit_order.setVisible(manager.hasOpenOrder());
     }
 
     private View.OnClickListener fabSendOrderPressed = view -> {
@@ -207,4 +216,13 @@ public class MainActivity extends AppCompatActivity
     public void clearDialogFragment() {
         fragNavController.clearDialogFragment();
     }
+
+
+    private MenuItem.OnMenuItemClickListener menuEditOrderPressed = new MenuItem.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            fragNavController.showDialogFragment(new OrderEditDialogFragment());
+            return true;
+        }
+    };
 }
