@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity
         fragments.add(new WaiterHomeFragment());
         fragments.add(new WaiterChooseFragment());
         fragments.add(new StaffModeFragment());
+        fragments.add(new LanguageChooseFragment());
     }
 
     @Override
@@ -156,6 +157,8 @@ public class MainActivity extends AppCompatActivity
             fragNavController.switchTab(FragNavController.TAB3);
         } else if (id == R.id.nav_orders_view) {
             fragNavController.switchTab(FragNavController.TAB4);
+        } else if (id == R.id.nav_change_language) {
+            fragNavController.switchTab(FragNavController.TAB5);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

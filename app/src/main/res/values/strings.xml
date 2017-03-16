@@ -16,4 +16,6 @@
     <string name="please_select_your_name_from_the_list">Please select your name from the list</string>
     <string name="dialog_order_edit_title">Edit Items in Order</string>
     <string name="dialog_order_doneEditing">Done Editing</string>
+    <string name="language_choose_subtitle">The language you choose here only affects the items that are stored in the ROS server</string>
+    <string name="language_choose_title">Choose a language</string>
 </resources>

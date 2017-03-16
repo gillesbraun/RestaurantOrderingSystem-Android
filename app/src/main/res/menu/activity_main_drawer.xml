@@ -26,4 +26,8 @@
                 android:title="View Orders" />
         </menu>
     </item>
+    <item
+        android:id="@+id/nav_change_language"
+        android:icon="@drawable/ic_language"
+        android:title="Change language" />
 </menu>
