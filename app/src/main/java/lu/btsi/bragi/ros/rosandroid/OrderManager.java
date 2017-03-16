@@ -65,7 +65,7 @@ public class OrderManager {
         return order != null;
     }
 
-    boolean orderHasProducts() {
+    public boolean orderHasProducts() {
         return order != null && order.getProductPriceForOrder() != null && order.getProductPriceForOrder().size() > 0;
     }
 

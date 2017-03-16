@@ -21,6 +21,7 @@ import lu.btsi.bragi.ros.models.pojos.Order;
 import lu.btsi.bragi.ros.models.pojos.Product;
 import lu.btsi.bragi.ros.models.pojos.ProductPriceForOrder;
 import lu.btsi.bragi.ros.rosandroid.Config;
+import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.OrderManager;
 import lu.btsi.bragi.ros.rosandroid.R;
 
@@ -115,6 +116,15 @@ public class OrderEditDialogFragment extends DialogFragment {
             buttonIncrease.setTag(productPriceForOrder.getProduct());
 
             return convertView;
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+            ((MainActivity)getActivity()).updateFabVisibility();
+            if(OrderManager.getInstance().hasOpenOrder() && ! OrderManager.getInstance().orderHasProducts()) {
+                dismiss();
+            }
         }
 
         @OnClick(R.id.single_order_button_remove)
