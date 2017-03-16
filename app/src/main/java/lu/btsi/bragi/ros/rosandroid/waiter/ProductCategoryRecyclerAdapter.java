@@ -14,6 +14,7 @@ import java.util.List;
 import java8.util.stream.StreamSupport;
 import lu.btsi.bragi.ros.models.pojos.Product;
 import lu.btsi.bragi.ros.models.pojos.ProductCategory;
+import lu.btsi.bragi.ros.rosandroid.Config;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.R;
 
@@ -25,6 +26,7 @@ class ProductCategoryRecyclerAdapter extends RecyclerView.Adapter<ProductCategor
     private List<Product> products;
     private String baseURL;
     private final MainActivity mainActivity;
+    private String langCode = Config.getInstance().getLanguage().getCode();
 
     ProductCategoryRecyclerAdapter(List<ProductCategory> categories, List<Product> products, String baseURL, MainActivity mainActivity) {
         this.categories = categories;
@@ -44,7 +46,10 @@ class ProductCategoryRecyclerAdapter extends RecyclerView.Adapter<ProductCategor
         ProductCategory category = categories.get(position);
         String url = "http://"+baseURL + ":8888"+ category.getImageUrl();
         ImageLoader.getInstance().displayImage(url, holder.image);
-        holder.title.setText(category.getProductCategoryLocalized().get(0).getLabel());
+        StreamSupport.stream(category.getProductCategoryLocalized())
+                .filter(pCL -> pCL.getLanguageCode().equals(langCode))
+                .findFirst()
+                .ifPresent(pcl -> holder.title.setText(pcl.getLabel()));
         holder.products = StreamSupport.stream(products)
                 .filter(p -> p.getProductCategory().equals(category))
                 .collect(toList());
