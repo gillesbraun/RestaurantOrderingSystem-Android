@@ -8,4 +8,6 @@ public interface ConnectionCallback {
     void connectionOpened();
 
     void connectionClosed();
+
+    void connectionError(Exception e);
 }

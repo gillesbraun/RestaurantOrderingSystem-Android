@@ -18,4 +18,15 @@
     <string name="dialog_order_doneEditing">Done Editing</string>
     <string name="language_choose_subtitle">The language you choose here only affects the items that are stored in the ROS server</string>
     <string name="language_choose_title">Choose a language</string>
+    <string name="home_title">Welcome to Restaurant Ordering System for Android</string>
+    <string name="home_isconnected">Is connected to: %s</string>
+    <string name="home_notconnected">Is not connected.</string>
+    <string name="home_language_changed_toast">Changed language to %s</string>
+    <string name="home_dialog_hint">IP or Hostname</string>
+    <string name="home_dialog_title">Enter the IP address or hostname of the server</string>
+    <string name="preference_file_key">lu.btsi.bragi.ros.preferences</string>
+    <string name="order_sent">Order has been sent to server</string>
+    <string name="dialog_exit_title">Are you sure you want to exit?</string>
+    <string name="dialog_exit_no">Go Back</string>
+    <string name="dialog_exit_yes">Exit</string>
 </resources>

@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+        ConnectionManager.getInstance().initPreferences(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -96,12 +96,12 @@ public class MainActivity extends AppCompatActivity
 
         if(fragNavController.isRootFragment()) {
             new MaterialDialog.Builder(this)
-                    .title("Are you sure you want to exit?")
-                    .positiveText("Exit")
+                    .title(R.string.dialog_exit_title)
+                    .positiveText(R.string.dialog_exit_yes)
                     .onPositive((dialog1, which) ->
                         super.onBackPressed()
                     )
-                    .negativeText("Go Back")
+                    .negativeText(R.string.dialog_exit_no)
                     .build()
                     .show();
         } else {
@@ -178,6 +178,17 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    @Override
+    public void connectionError(Exception e) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            new MaterialDialog.Builder(this)
+                    .title("Error")
+                    .content(e.getClass().getSimpleName() + ": " + e.getMessage())
+                    .build()
+                    .show();
+        });
+    }
+
     public void pushFragment(@Nullable Fragment fragment) {
         fragNavController.pushFragment(fragment);
     }
@@ -207,7 +218,7 @@ public class MainActivity extends AppCompatActivity
     private View.OnClickListener fabSendOrderPressed = view -> {
         OrderManager.getInstance().sendToServer();
         updateFabVisibility();
-        Snackbar.make(view, "Order has been sent to server", BaseTransientBottomBar.LENGTH_LONG).show();
+        Snackbar.make(view, R.string.order_sent, BaseTransientBottomBar.LENGTH_LONG).show();
         fragNavController.clearStack();
     };
 

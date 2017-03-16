@@ -2,14 +2,11 @@ package lu.btsi.bragi.ros.rosandroid.waiter;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -44,6 +41,10 @@ public class WaiterHomeFragment extends Fragment {
     private List<Table> tables;
 
     public WaiterHomeFragment() {
+        loadData();
+    }
+
+    private void loadData() {
         ConnectionManager.getInstance().sendWithAction(new MessageGet<>(Table.class), m -> {
             try {
                 tables = new Message<Table>(m).getPayload();
@@ -59,6 +60,9 @@ public class WaiterHomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_waiter_home, container, false);
         ButterKnife.bind(this, view);
         waiterName.setText(String.format(Locale.GERMAN, waiterString, Config.getInstance().getWaiter().getName()));
+        if(tables == null) {
+            loadData();
+        }
         return view;
     }
 

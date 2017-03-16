@@ -1,7 +1,5 @@
 package lu.btsi.bragi.ros.rosandroid.connection;
 
-import android.util.Log;
-
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -17,7 +15,6 @@ public class Client extends WebSocketClient {
 
     Client(URI serverURI) {
         super(serverURI);
-        Log.d("ROS", "trying connection to "+ serverURI.toString());
     }
 
     @Override
@@ -37,7 +34,7 @@ public class Client extends WebSocketClient {
 
     @Override
     public void onError(Exception ex) {
-        Log.d("ROS", "ERROR "+ex.getMessage());
+        connectionCallback.connectionError(ex);
     }
 
     void setConnectionCallback(ConnectionManager connectionCallback) {

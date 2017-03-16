@@ -1,5 +1,7 @@
 package lu.btsi.bragi.ros.rosandroid.connection;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -20,14 +22,17 @@ import java.util.UUID;
 
 import lu.btsi.bragi.ros.models.message.Message;
 import lu.btsi.bragi.ros.models.message.MessageType;
+import lu.btsi.bragi.ros.rosandroid.MainActivity;
+import lu.btsi.bragi.ros.rosandroid.R;
 
 /**
  * Created by gillesbraun on 13/03/2017.
  */
 
 public class ConnectionManager implements ConnectionCallback, MessageCallbackHandler {
-    private String host = "192.168.0.77";
-    private URI url = URI.create("ws://"+host+":8887");
+    private SharedPreferences preferences;
+    private String host;
+    private URI url;
     private Client client;
     private boolean isConnected = false;
     private ConnectionCallback connectionCallback;
@@ -45,9 +50,13 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
         instance = new ConnectionManager(callback);
     }
 
+    public void initPreferences(MainActivity mainActivity) {
+        instance.preferences = mainActivity.getSharedPreferences(mainActivity.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        loadSettings();
+    }
+
     private ConnectionManager(ConnectionCallback connectionCallback) {
         this.connectionCallback = connectionCallback;
-        newClient();
     }
 
     public void sendWithAction(Message message, MessageCallback messageCallback) {
@@ -62,7 +71,8 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
 
     public void send(Message message) {
         try {
-            client.send(message.toString());
+            if(client != null && message != null && isConnected)
+                client.send(message.toString());
         } catch (WebsocketNotConnectedException e) {
             queueMessageForLater(message);
         }
@@ -95,10 +105,28 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     }
 
     private void newClient() {
-        client = new Client(url);
-        client.setConnectionCallback(this);
-        client.setMessageCallbackHandler(this);
-        client.connect();
+        if(host == null || url == null)
+            return;
+        try {
+            client = new Client(url);
+            client.setConnectionCallback(this);
+            client.setMessageCallbackHandler(this);
+            client.connect();
+        } catch (Exception e) {
+            connectionCallback.connectionError(e);
+        }
+    }
+
+    private void saveSettings() {
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putString("host", host);
+        edit.apply();
+    }
+
+    private void loadSettings() {
+        if(preferences != null) {
+            setHost(preferences.getString("host", null));
+        }
     }
 
     @Override
@@ -114,6 +142,11 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     }
 
     @Override
+    public void connectionError(Exception e) {
+        connectionCallback.connectionError(e);
+    }
+
+    @Override
     public void handleMessage(String text) {
         boolean isError = Message.messageType(text).equals(MessageType.Error);
         UUID messageUUID = Message.messageUUID(text);
@@ -124,8 +157,23 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
                 callbackMap.remove(messageUUID);
             });
         } else {
-            Log.e("ROS", "SOMTHING WRONG");
             Log.e("ROS", text);
         }
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+        isConnected = false;
+        url = URI.create("ws://"+host+":8887");
+        saveSettings();
+        newClient();
+    }
+
+    public String getHost() {
+        return host;
     }
 }
