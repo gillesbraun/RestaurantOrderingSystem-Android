@@ -11,7 +11,6 @@ import lu.btsi.bragi.ros.models.pojos.Order;
 import lu.btsi.bragi.ros.models.pojos.Product;
 import lu.btsi.bragi.ros.models.pojos.ProductPriceForOrder;
 import lu.btsi.bragi.ros.models.pojos.Table;
-import lu.btsi.bragi.ros.models.pojos.Waiter;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 
 /**
@@ -87,5 +86,24 @@ public class OrderManager {
 
     public Order getOrder() {
         return order;
+    }
+
+    public void removeProductFromOrder(Product product) {
+        if(order != null && order.getProductPriceForOrder() != null) {
+            StreamSupport.stream(order.getProductPriceForOrder())
+                    .filter(ppfo -> ppfo.getProduct().equals(product))
+                    .findFirst()
+                    .ifPresent(ppfo -> order.getProductPriceForOrder().remove(ppfo));
+        }
+    }
+
+    public void changeQuantity(Product product, int quantity) {
+        if(order != null && order.getProductPriceForOrder() != null) {
+            StreamSupport.stream(order.getProductPriceForOrder())
+                    .filter(ppfo -> ppfo.getProduct().equals(product))
+                    .filter(ppfo -> quantity < 0 && ppfo.getQuantity().longValue() + quantity > 0 || quantity > 0)
+                    .findFirst()
+                    .ifPresent(ppfo -> ppfo.setQuantity(UInteger.valueOf(ppfo.getQuantity().longValue() + quantity)));
+        }
     }
 }

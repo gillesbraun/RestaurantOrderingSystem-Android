@@ -33,7 +33,6 @@ import java.util.List;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionCallback;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 import lu.btsi.bragi.ros.rosandroid.waiter.OrderEditDialogFragment;
-import lu.btsi.bragi.ros.rosandroid.waiter.SingleProductDialog;
 import lu.btsi.bragi.ros.rosandroid.waiter.WaiterChooseFragment;
 import lu.btsi.bragi.ros.rosandroid.waiter.WaiterHomeFragment;
 
@@ -199,7 +198,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             fab_oderSubmit.setVisibility(View.GONE);
         }
-        menu_edit_order.setVisible(manager.hasOpenOrder());
+        menu_edit_order.setVisible(manager.hasOpenOrder() && manager.orderHasProducts());
     }
 
     private View.OnClickListener fabSendOrderPressed = view -> {

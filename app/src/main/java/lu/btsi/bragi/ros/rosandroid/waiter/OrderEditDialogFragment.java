@@ -7,6 +7,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -14,8 +15,10 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import java8.util.stream.StreamSupport;
 import lu.btsi.bragi.ros.models.pojos.Order;
+import lu.btsi.bragi.ros.models.pojos.Product;
 import lu.btsi.bragi.ros.models.pojos.ProductPriceForOrder;
 import lu.btsi.bragi.ros.rosandroid.Config;
 import lu.btsi.bragi.ros.rosandroid.OrderManager;
@@ -45,6 +48,11 @@ public class OrderEditDialogFragment extends DialogFragment {
         return dialog;
     }
 
+    @OnClick(R.id.dialog_order_buttonClose)
+    void closeDialog() {
+        dismiss();
+    }
+
     class OrderEditAdapter extends BaseAdapter {
         @BindView(R.id.single_order_textView_price)
         TextView textViewPrice;
@@ -55,6 +63,16 @@ public class OrderEditDialogFragment extends DialogFragment {
         @BindView(R.id.single_order_textView_quantity)
         TextView textViewQuantity;
 
+        @BindView(R.id.single_order_button_remove)
+        Button buttonRemove;
+
+        @BindView(R.id.single_order_button_increase)
+        Button buttonIncrease;
+
+        @BindView(R.id.single_order_button_decrease)
+        Button buttonDecrease;
+
+        private ProductPriceForOrder productPriceForOrder;
 
         @Override
         public int getCount() {
@@ -78,7 +96,8 @@ public class OrderEditDialogFragment extends DialogFragment {
             }
             ButterKnife.bind(this, convertView);
 
-            ProductPriceForOrder productPriceForOrder = order.getProductPriceForOrder().get(position);
+
+            productPriceForOrder = order.getProductPriceForOrder().get(position);
             double price = productPriceForOrder.getPricePerProduct().doubleValue() * productPriceForOrder.getQuantity().longValue();
             String priceStr = String.format(Locale.GERMANY, "%.2f €", price);
 
@@ -91,7 +110,29 @@ public class OrderEditDialogFragment extends DialogFragment {
                     .findFirst()
                     .ifPresent(pL -> textViewProductName.setText(pL.getLabel()));
 
+            buttonRemove.setTag(productPriceForOrder.getProduct());
+            buttonDecrease.setTag(productPriceForOrder.getProduct());
+            buttonIncrease.setTag(productPriceForOrder.getProduct());
+
             return convertView;
+        }
+
+        @OnClick(R.id.single_order_button_remove)
+        void removeClicked(View view) {
+            OrderManager.getInstance().removeProductFromOrder((Product) view.getTag());
+            notifyDataSetChanged();
+        }
+
+        @OnClick(R.id.single_order_button_increase)
+        void increaseQuantityClicked(View view) {
+            OrderManager.getInstance().changeQuantity((Product) view.getTag(), 1);
+            notifyDataSetChanged();
+        }
+
+        @OnClick(R.id.single_order_button_decrease)
+        void decreaseQuantityClicked(View view) {
+            OrderManager.getInstance().changeQuantity((Product) view.getTag(), -1);
+            notifyDataSetChanged();
         }
     }
 }

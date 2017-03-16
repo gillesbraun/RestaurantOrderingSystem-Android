@@ -40,9 +40,21 @@
         android:layout_marginRight="20dp"
         android:layout_alignBaseline="@+id/single_order_button_decrease"
         android:layout_alignBottom="@+id/single_order_button_decrease"
-        android:layout_toLeftOf="@+id/single_order_button_decrease"
-        android:layout_toStartOf="@+id/single_order_button_decrease" />
+        android:layout_toLeftOf="@+id/single_order_button_remove"
+        android:layout_toStartOf="@+id/single_order_button_remove" />
 
+    <Button
+        android:id="@+id/single_order_button_remove"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/single_order_button_decrease"
+        android:layout_toStartOf="@+id/single_order_button_decrease"
+        android:text="Remove"
+        android:textColor="#ff0000"/>
 
     <Button
         android:text="-"
@@ -59,19 +71,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/single_order_button_remove"
-        android:layout_toStartOf="@+id/single_order_button_remove"
-        android:text="+" />
-
-    <Button
-        android:id="@+id/single_order_button_remove"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="Remove"
-        android:textColor="#ff0000"/>
+        android:text="+" />
 
 </RelativeLayout>
