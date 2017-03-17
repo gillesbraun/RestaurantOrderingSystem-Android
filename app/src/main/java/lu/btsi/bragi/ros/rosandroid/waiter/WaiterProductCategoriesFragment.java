@@ -1,8 +1,6 @@
 package lu.btsi.bragi.ros.rosandroid.waiter;
 
-import android.app.Activity;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,13 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.ncapdevi.fragnav.FragNavController;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,7 +28,6 @@ import lu.btsi.bragi.ros.models.message.MessageException;
 import lu.btsi.bragi.ros.models.message.MessageGet;
 import lu.btsi.bragi.ros.models.pojos.Product;
 import lu.btsi.bragi.ros.models.pojos.ProductCategory;
-import lu.btsi.bragi.ros.models.pojos.Waiter;
 import lu.btsi.bragi.ros.rosandroid.Config;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.OrderManager;
@@ -124,6 +118,7 @@ public class WaiterProductCategoriesFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.actionbar_productcategories_select);
         updateView();
     }
 

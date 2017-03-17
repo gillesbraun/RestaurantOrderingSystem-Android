@@ -71,6 +71,7 @@ public class OrdersFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.actionbar_orders);
         loadData();
     }
 }

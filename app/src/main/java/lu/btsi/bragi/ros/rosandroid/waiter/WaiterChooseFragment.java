@@ -42,6 +42,7 @@ public class WaiterChooseFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.actionbar_waiter_choose);
 
         ConnectionManager.getInstance().sendWithAction(new MessageGet<>(Waiter.class), new MessageCallback() {
             @Override

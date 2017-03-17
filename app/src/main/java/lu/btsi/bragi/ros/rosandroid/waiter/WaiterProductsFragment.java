@@ -1,6 +1,5 @@
 package lu.btsi.bragi.ros.rosandroid.waiter;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,22 +13,11 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.GravityEnum;
-import com.afollestad.materialdialogs.MaterialDialog;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import java8.util.Optional;
-import java8.util.function.Consumer;
-import java8.util.function.Predicate;
-import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
-import lu.btsi.bragi.ros.models.pojos.AllergenLocalized;
 import lu.btsi.bragi.ros.models.pojos.Product;
-import lu.btsi.bragi.ros.models.pojos.ProductAllergen;
-import lu.btsi.bragi.ros.models.pojos.ProductLocalized;
 import lu.btsi.bragi.ros.rosandroid.Config;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.R;
@@ -49,7 +37,7 @@ public class WaiterProductsFragment extends Fragment implements AdapterView.OnIt
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.actionbar_product_select);
 
         ListView listView_products = (ListView) view.findViewById(R.id.listView_products);
 
