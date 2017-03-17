@@ -29,4 +29,11 @@
     <string name="dialog_exit_title">Are you sure you want to exit?</string>
     <string name="dialog_exit_no">Go Back</string>
     <string name="dialog_exit_yes">Exit</string>
+    <string name="order_card_button_processing">Mark as processing</string>
+    <string name="order_card_button_processingdone">Mark processing Done</string>
+    <string name="order_card_time">Time created: %s</string>
+    <string name="order_card_waiter">Waiter: %s</string>
+    <string name="order_card_title">Order: %s</string>
+    <string name="order_card_isprocessing">Processing</string>
+    <string name="order_card_isprocessingdone">Processing Done</string>
 </resources>

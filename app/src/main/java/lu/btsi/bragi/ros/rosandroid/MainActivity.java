@@ -50,8 +50,9 @@ public class MainActivity extends AppCompatActivity
         fragments.add(new HomeFragment());
         fragments.add(new WaiterHomeFragment());
         fragments.add(new WaiterChooseFragment());
-        fragments.add(new StaffModeFragment());
+        fragments.add(new OrdersFragment());
         fragments.add(new LanguageChooseFragment());
+        //fragments.add(new OrdersFragment());
     }
 
     @Override
