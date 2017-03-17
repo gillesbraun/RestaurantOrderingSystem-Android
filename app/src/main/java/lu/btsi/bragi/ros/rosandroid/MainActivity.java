@@ -3,6 +3,7 @@ package lu.btsi.bragi.ros.rosandroid;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -232,6 +233,10 @@ public class MainActivity extends AppCompatActivity
 
     public void clearStack() {
         fragNavController.clearStack();
+    }
+
+    public void replaceFragment(@NonNull Fragment fragment) {
+        fragNavController.replaceFragment(fragment);
     }
 
     public void clearDialogFragment() {

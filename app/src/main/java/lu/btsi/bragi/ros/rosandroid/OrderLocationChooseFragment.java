@@ -77,7 +77,7 @@ public class OrderLocationChooseFragment extends Fragment {
             Toast.makeText(getContext(), String.format(
                     Config.getInstance().getLocale(getContext()), strToastUpdated, location.getDescription())
                     , Toast.LENGTH_LONG).show();
-            ((MainActivity)getActivity()).pushFragment(new OrdersFragment());
+            ((MainActivity)getActivity()).replaceFragment(new OrdersFragment());
         }
     }
 
