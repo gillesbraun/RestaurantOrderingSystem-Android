@@ -6,6 +6,7 @@ import android.os.Build;
 import java.util.Locale;
 
 import lu.btsi.bragi.ros.models.pojos.Language;
+import lu.btsi.bragi.ros.models.pojos.Location;
 import lu.btsi.bragi.ros.models.pojos.Table;
 import lu.btsi.bragi.ros.models.pojos.Waiter;
 
@@ -19,6 +20,7 @@ public class Config {
     private Waiter waiter;
 
     private static final Config ourInstance = new Config();
+    private Location location;
 
     public static Config getInstance() {
         return ourInstance;
@@ -49,5 +51,13 @@ public class Config {
         } else {
             return context.getResources().getConfiguration().locale;
         }
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }

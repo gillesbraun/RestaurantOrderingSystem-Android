@@ -39,7 +39,7 @@ import lu.btsi.bragi.ros.rosandroid.waiter.WaiterHomeFragment;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ConnectionCallback {
 
-    List<Fragment> fragments = new ArrayList<>(3);
+    List<Fragment> fragments = new ArrayList<>(6);
     private FragNavController fragNavController;
     private FloatingActionButton fab_oderSubmit;
     private MenuItem menu_edit_order;
@@ -50,9 +50,8 @@ public class MainActivity extends AppCompatActivity
         fragments.add(new HomeFragment());
         fragments.add(new WaiterHomeFragment());
         fragments.add(new WaiterChooseFragment());
-        fragments.add(new OrdersFragment());
+        fragments.add(new StaffModeFragment());
         fragments.add(new LanguageChooseFragment());
-        //fragments.add(new OrdersFragment());
     }
 
     @Override
@@ -158,6 +157,9 @@ public class MainActivity extends AppCompatActivity
             fragNavController.switchTab(FragNavController.TAB3);
         } else if (id == R.id.nav_orders_view) {
             fragNavController.switchTab(FragNavController.TAB4);
+            if(Config.getInstance().getLocation() != null) {
+                fragNavController.pushFragment(new OrdersFragment());
+            }
         } else if (id == R.id.nav_change_language) {
             fragNavController.switchTab(FragNavController.TAB5);
         }

@@ -44,4 +44,6 @@
     <string name="sidebar_vieworders">View Orders</string>
     <string name="sidebar_cat_settings">Settings</string>
     <string name="sidebar_language">Change language</string>
+    <string name="order_location_title">Select the location of this tablet</string>
+    <string name="order_location_subtitle">This is used for filtering which products are shown from the orders.  For example, drinks which are in the \'bar\' category shouldn\'t be shown in the kitchen tablet</string>
 </resources>
