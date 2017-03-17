@@ -54,4 +54,5 @@
     <string name="actionbar_productcategories_select">Select Category to add</string>
     <string name="actionbar_product_select">Add a Product to Order</string>
     <string name="order_location_toast_updated">Location changed to: %s</string>
+    <string name="order_card_orderreceived">Order Received</string>
 </resources>

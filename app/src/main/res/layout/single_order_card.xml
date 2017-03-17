@@ -67,6 +67,15 @@
             android:layout_marginBottom="10dp">
 
             <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                android:checked="true"
+                android:clickable="false"
+                android:text="@string/order_card_orderreceived" />
+
+            <CheckBox
                 android:id="@+id/order_card_isprocessing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
