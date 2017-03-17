@@ -3,31 +3,35 @@
 
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/ic_menu_manage"
-        android:title="Home" />
+        android:icon="@drawable/ic_home"
+        android:title="@string/sidebar_home" />
 
-    <item android:title="Waiter">
+    <item android:title="@string/sidebar_cat_waiter">
         <menu>
             <item
                 android:id="@+id/nav_waiter"
-                android:icon="@drawable/ic_menu_camera"
-                android:title="Waiter Mode" />
+                android:icon="@drawable/ic_restaurant"
+                android:title="@string/sidebar_waitermode" />
             <item
                 android:id="@+id/nav_change_waiter"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Change Waiter" />
+                android:icon="@drawable/ic_people"
+                android:title="@string/sidebar_changewaiter" />
         </menu>
     </item>
-    <item android:title="Order Display">
+    <item android:title="@string/sidebar_cat_order">
         <menu>
             <item
                 android:id="@+id/nav_orders_view"
-                android:icon="@drawable/ic_menu_share"
-                android:title="View Orders" />
+                android:icon="@drawable/ic_shopping_cart"
+                android:title="@string/sidebar_vieworders" />
         </menu>
     </item>
-    <item
-        android:id="@+id/nav_change_language"
-        android:icon="@drawable/ic_language"
-        android:title="Change language" />
+    <item android:title="@string/sidebar_cat_settings">
+        <menu>
+            <item
+                android:id="@+id/nav_change_language"
+                android:icon="@drawable/ic_language"
+                android:title="@string/sidebar_language" />
+        </menu>
+    </item>
 </menu>
