@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
@@ -31,6 +32,9 @@ import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 public class StaffModeFragment extends Fragment {
     @BindView(R.id.order_location_listView)
     ListView listViewLocations;
+
+    @BindString(R.string.order_location_toast_updated)
+    String strToastUpdated;
 
     private List<Location> locations;
 
@@ -68,8 +72,11 @@ public class StaffModeFragment extends Fragment {
     @OnItemClick(R.id.order_location_listView)
     void locationClick(int position) {
         if(locations != null) {
-            Config.getInstance().setLocation(locations.get(position));
-            Toast.makeText(getContext(), "Location changed to: %s", Toast.LENGTH_LONG).show();
+            Location location = locations.get(position);
+            Config.getInstance().setLocation(location);
+            Toast.makeText(getContext(), String.format(
+                    Config.getInstance().getLocale(getContext()), strToastUpdated, location.getDescription())
+                    , Toast.LENGTH_LONG).show();
             ((MainActivity)getActivity()).pushFragment(new OrdersFragment());
         }
     }
