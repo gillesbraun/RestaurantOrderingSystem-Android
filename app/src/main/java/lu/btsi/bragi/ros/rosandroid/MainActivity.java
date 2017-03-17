@@ -28,6 +28,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionCallback;
@@ -154,6 +155,8 @@ public class MainActivity extends AppCompatActivity
             else
                 fragNavController.switchTab(FragNavController.TAB2);
         } else if (id == R.id.nav_change_waiter) {
+            if(Config.getInstance().getLocation() != null)
+                Collections.replaceAll(fragments, fragments.get(FragNavController.TAB3), new OrdersFragment());
             fragNavController.switchTab(FragNavController.TAB3);
         } else if (id == R.id.nav_orders_view) {
             fragNavController.switchTab(FragNavController.TAB4);

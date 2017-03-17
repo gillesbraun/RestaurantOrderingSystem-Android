@@ -2,14 +2,18 @@ package lu.btsi.bragi.ros.rosandroid;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -36,6 +40,8 @@ public class OrdersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_orders, container, false);
         ButterKnife.bind(this, view);
+        recyclerView.setAdapter(new OrdersRecyclerView(new ArrayList<>(), getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
     }
 
@@ -43,7 +49,9 @@ public class OrdersFragment extends Fragment {
         ConnectionManager.getInstance().sendWithAction(new MessageGet<>(Order.class), m -> {
             try {
                 orders = new Message<Order>(m).getPayload();
-                recyclerView.setAdapter(new OrdersRecyclerView(orders, getContext()));
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    recyclerView.setAdapter(new OrdersRecyclerView(orders, getContext()));
+                }, 200);
                 updateOrientation();
             } catch (MessageException e) {
                 e.printStackTrace();
