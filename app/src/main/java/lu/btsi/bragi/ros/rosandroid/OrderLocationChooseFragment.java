@@ -29,7 +29,7 @@ import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
  * Created by gillesbraun on 13/03/2017.
  */
 
-public class StaffModeFragment extends Fragment {
+public class OrderLocationChooseFragment extends Fragment {
     @BindView(R.id.order_location_listView)
     ListView listViewLocations;
 
@@ -38,7 +38,7 @@ public class StaffModeFragment extends Fragment {
 
     private List<Location> locations;
 
-    public StaffModeFragment() {
+    public OrderLocationChooseFragment() {
         loadData();
     }
 
