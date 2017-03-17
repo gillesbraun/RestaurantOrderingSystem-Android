@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp">
+
+
+    <TextView
+        android:id="@+id/single_order_review_textView_quantity"
+        android:text="1"
+        android:textSize="18sp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/single_order_review_textView_productName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Product "
+        android:textSize="18sp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/single_order_review_textView_price"
+        android:layout_toStartOf="@+id/single_order_review_textView_price"
+        android:layout_toRightOf="@+id/single_order_review_textView_quantity"
+        android:layout_toEndOf="@+id/single_order_review_textView_quantity" />
+
+    <TextView
+        android:id="@+id/single_order_review_textView_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="-.--€"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toLeftOf="@+id/single_order_review_textView_price_total"
+        android:layout_toStartOf="@+id/single_order_review_textView_price_total" />
+
+    <TextView
+        android:id="@+id/single_order_review_textView_price_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="-.--€"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

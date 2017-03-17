@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -34,6 +32,7 @@ import java.util.List;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionCallback;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 import lu.btsi.bragi.ros.rosandroid.waiter.OrderEditDialogFragment;
+import lu.btsi.bragi.ros.rosandroid.waiter.ReviewOrderDialog;
 import lu.btsi.bragi.ros.rosandroid.waiter.WaiterChooseFragment;
 import lu.btsi.bragi.ros.rosandroid.waiter.WaiterHomeFragment;
 
@@ -222,14 +221,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     private View.OnClickListener fabSendOrderPressed = view -> {
-        OrderManager.getInstance().sendToServer();
-        updateFabVisibility();
-        Snackbar.make(view, R.string.order_sent, BaseTransientBottomBar.LENGTH_LONG).show();
-        fragNavController.clearStack();
+        ReviewOrderDialog reviewOrderDialog = new ReviewOrderDialog();
+        reviewOrderDialog.setCancelable(false);
+        fragNavController.showDialogFragment(reviewOrderDialog);
     };
 
     public void showDialogFragment(@Nullable DialogFragment dialogFragment) {
         fragNavController.showDialogFragment(dialogFragment);
+    }
+
+    public void clearStack() {
+        fragNavController.clearStack();
     }
 
     public void clearDialogFragment() {

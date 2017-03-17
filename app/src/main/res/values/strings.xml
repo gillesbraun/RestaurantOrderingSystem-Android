@@ -55,4 +55,7 @@
     <string name="actionbar_product_select">Add a Product to Order</string>
     <string name="order_location_toast_updated">Location changed to: %s</string>
     <string name="order_card_orderreceived">Order Received</string>
+    <string name="order_review_button_send">Send Order</string>
+    <string name="dialog_order_review_title">Review items before confirm</string>
+    <string name="dialog_order_review_cancel">Don\'t send</string>
 </resources>

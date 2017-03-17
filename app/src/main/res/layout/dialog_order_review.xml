@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="@string/dialog_order_review_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+    <ListView
+        android:id="@+id/dialog_order_review_listView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:gravity="end"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/dialog_order_review_button_cancel"
+            android:text="@string/dialog_order_review_cancel"
+            android:layout_marginTop="10dp"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:textColor="#ff0000"
+            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/dialog_order_review_button_ok"
+            android:text="@string/order_review_button_send"
+            android:layout_marginTop="10dp"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</LinearLayout>
