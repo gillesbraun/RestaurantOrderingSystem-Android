@@ -1,5 +1,6 @@
 package lu.btsi.bragi.ros.rosandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,6 +22,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.ncapdevi.fragnav.FragNavController;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -251,4 +254,12 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
     };
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null && scanResult.getContents() != null) {
+            ConnectionManager.getInstance().setHost(scanResult.getContents());
+        }
+    }
 }

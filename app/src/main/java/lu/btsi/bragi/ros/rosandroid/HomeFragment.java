@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.zxing.integration.android.IntentIntegrator;
 
 import java.util.Locale;
 
@@ -19,7 +20,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
-
 /**
  * Created by gillesbraun on 13/03/2017.
  */
@@ -76,6 +76,12 @@ public class HomeFragment extends Fragment {
                     manager.setHost(input.toString());
                 })
                 .show();
+    }
+
+    @OnClick(R.id.home_button_connect_barcode)
+    public void buttonConnectBarcodePressed() {
+        IntentIntegrator integrator = new IntentIntegrator(getActivity());
+        integrator.initiateScan();
     }
 
     private void stopRunner() {

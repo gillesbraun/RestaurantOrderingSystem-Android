@@ -168,7 +168,11 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     public void setHost(String host) {
         this.host = host;
         isConnected = false;
-        url = URI.create("ws://"+host+":8887");
+        if(host.contains(":")) {
+            url = URI.create("ws://" + host);
+        } else {
+            url = URI.create("ws://" + host + ":8887");
+        }
         saveSettings();
         newClient();
     }

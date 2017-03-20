@@ -50,5 +50,8 @@ dependencies {
     compile 'com.afollestad.material-dialogs:core:0.9.4.1'
     compile 'com.afollestad.material-dialogs:commons:0.9.4.1'
     compile 'com.jakewharton:butterknife:8.5.1'
+    compile group: 'com.google.zxing', name: 'android-core', version: '3.3.0'
+    compile group: 'com.google.zxing', name: 'core', version: '3.3.0'
+    compile group: 'com.google.zxing', name: 'android-integration', version: '3.3.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 }
