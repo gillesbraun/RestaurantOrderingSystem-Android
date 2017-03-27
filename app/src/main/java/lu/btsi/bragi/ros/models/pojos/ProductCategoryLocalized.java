@@ -10,19 +10,18 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProductCategoryLocalized implements Serializable {
 
     private static final long serialVersionUID = -517901937;
 
-    private UInteger productCategoryId;
-    private String languageCode;
-    private String label;
+    private UInteger  productCategoryId;
+    private String    languageCode;
+    private String    label;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    public ProductCategoryLocalized() {
-    }
+    public ProductCategoryLocalized() {}
 
     public ProductCategoryLocalized(ProductCategoryLocalized value) {
         this.productCategoryId = value.productCategoryId;
@@ -33,11 +32,11 @@ public class ProductCategoryLocalized implements Serializable {
     }
 
     public ProductCategoryLocalized(
-            UInteger productCategoryId,
-            String languageCode,
-            String label,
-            Timestamp createdAt,
-            Timestamp updatedAt
+        UInteger  productCategoryId,
+        String    languageCode,
+        String    label,
+        Timestamp createdAt,
+        Timestamp updatedAt
     ) {
         this.productCategoryId = productCategoryId;
         this.languageCode = languageCode;

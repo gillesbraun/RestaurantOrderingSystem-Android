@@ -9,19 +9,18 @@ import org.jooq.types.UInteger;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProductLocalized implements Serializable {
 
     private static final long serialVersionUID = -1872168795;
 
-    private UInteger productId;
-    private String languageCode;
-    private String label;
+    private UInteger  productId;
+    private String    languageCode;
+    private String    label;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    public ProductLocalized() {
-    }
+    public ProductLocalized() {}
 
     public ProductLocalized(ProductLocalized value) {
         this.productId = value.productId;
@@ -32,11 +31,11 @@ public class ProductLocalized implements Serializable {
     }
 
     public ProductLocalized(
-            UInteger productId,
-            String languageCode,
-            String label,
-            Timestamp createdAt,
-            Timestamp updatedAt
+        UInteger  productId,
+        String    languageCode,
+        String    label,
+        Timestamp createdAt,
+        Timestamp updatedAt
     ) {
         this.productId = productId;
         this.languageCode = languageCode;

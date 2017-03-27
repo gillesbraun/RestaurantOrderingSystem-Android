@@ -9,19 +9,18 @@ import org.jooq.types.UInteger;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AllergenLocalized implements Serializable {
 
     private static final long serialVersionUID = 1410875736;
 
-    private UInteger allergenId;
-    private String languageCode;
-    private String label;
+    private UInteger  allergenId;
+    private String    languageCode;
+    private String    label;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    public AllergenLocalized() {
-    }
+    public AllergenLocalized() {}
 
     public AllergenLocalized(AllergenLocalized value) {
         this.allergenId = value.allergenId;
@@ -32,11 +31,11 @@ public class AllergenLocalized implements Serializable {
     }
 
     public AllergenLocalized(
-            UInteger allergenId,
-            String languageCode,
-            String label,
-            Timestamp createdAt,
-            Timestamp updatedAt
+        UInteger  allergenId,
+        String    languageCode,
+        String    label,
+        Timestamp createdAt,
+        Timestamp updatedAt
     ) {
         this.allergenId = allergenId;
         this.languageCode = languageCode;

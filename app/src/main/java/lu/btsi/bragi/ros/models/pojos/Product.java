@@ -11,23 +11,25 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+import java8.util.stream.StreamSupport;
+
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Product implements Serializable {
 
     private static final long serialVersionUID = -1645283095;
 
-    private UInteger id;
+    private UInteger   id;
     private BigDecimal price;
-    private UInteger productCategoryId;
-    private UInteger locationId;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private UInteger   productCategoryId;
+    private UInteger   locationId;
+    private Timestamp  createdAt;
+    private Timestamp  updatedAt;
     private List<ProductLocalized> productLocalized;
     private ProductCategory productCategory;
     private List<ProductAllergen> productAllergen;
+    private Location location;
 
-    public Product() {
-    }
+    public Product() {}
 
     public Product(Product value) {
         this.id = value.id;
@@ -39,12 +41,12 @@ public class Product implements Serializable {
     }
 
     public Product(
-            UInteger id,
-            BigDecimal price,
-            UInteger productCategoryId,
-            UInteger locationId,
-            Timestamp createdAt,
-            Timestamp updatedAt
+        UInteger   id,
+        BigDecimal price,
+        UInteger   productCategoryId,
+        UInteger   locationId,
+        Timestamp  createdAt,
+        Timestamp  updatedAt
     ) {
         this.id = id;
         this.price = price;
@@ -104,11 +106,19 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return "N° " + id + ", Price: " + price + "€";
+        return "N\u00b0 " +id;
     }
 
     public void setProductLocalized(List<ProductLocalized> productLocalized) {
         this.productLocalized = productLocalized;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public List<ProductLocalized> getProductLocalized() {
@@ -129,5 +139,11 @@ public class Product implements Serializable {
 
     public List<ProductAllergen> getProductAllergen() {
         return productAllergen;
+    }
+
+    public ProductLocalized getProductInLanguage(Language language) {
+        return StreamSupport.stream(productLocalized)
+                .filter(pL -> pL.getLanguageCode().equals(language.getCode()))
+                .findFirst().get();
     }
 }

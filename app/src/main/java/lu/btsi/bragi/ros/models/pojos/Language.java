@@ -7,18 +7,18 @@ package lu.btsi.bragi.ros.models.pojos;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Language implements Serializable {
 
     private static final long serialVersionUID = -1013169633;
 
-    private String code;
-    private String name;
+    private String    code;
+    private String    name;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    public Language() {
-    }
+    public Language() {}
 
     public Language(Language value) {
         this.code = value.code;
@@ -28,10 +28,10 @@ public class Language implements Serializable {
     }
 
     public Language(
-            String code,
-            String name,
-            Timestamp createdAt,
-            Timestamp updatedAt
+        String    code,
+        String    name,
+        Timestamp createdAt,
+        Timestamp updatedAt
     ) {
         this.code = code;
         this.name = name;

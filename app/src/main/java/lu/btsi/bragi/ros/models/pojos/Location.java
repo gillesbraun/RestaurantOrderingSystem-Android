@@ -10,18 +10,17 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Location implements Serializable {
 
     private static final long serialVersionUID = 828100727;
 
-    private UInteger id;
-    private String description;
+    private UInteger  id;
+    private String    description;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    public Location() {
-    }
+    public Location() {}
 
     public Location(Location value) {
         this.id = value.id;
@@ -31,10 +30,10 @@ public class Location implements Serializable {
     }
 
     public Location(
-            UInteger id,
-            String description,
-            Timestamp createdAt,
-            Timestamp updatedAt
+        UInteger  id,
+        String    description,
+        Timestamp createdAt,
+        Timestamp updatedAt
     ) {
         this.id = id;
         this.description = description;
@@ -76,6 +75,6 @@ public class Location implements Serializable {
 
     @Override
     public String toString() {
-        return "N° " + id + ": " + description;
+        return "N\u00b0 " + id + ": " + description;
     }
 }

@@ -7,28 +7,34 @@ package lu.btsi.bragi.ros.models.pojos;
 import org.jooq.types.UInteger;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+import java8.util.Optional;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
+
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Order implements Serializable {
 
     private static final long serialVersionUID = -276657291;
 
-    private UInteger id;
-    private Byte processing;
-    private Byte processingDone;
-    private UInteger tableId;
-    private UInteger waiterId;
-    private UInteger invoiceId;
+    private UInteger  id;
+    private Byte      processing;
+    private Byte      processingDone;
+    private UInteger  tableId;
+    private UInteger  waiterId;
+    private UInteger  invoiceId;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private Waiter waiter;
+    private Waiter    waiter;
     private List<ProductPriceForOrder> productPriceForOrder;
     private Table table;
 
-    public Order() {
-    }
+    public Order() {}
 
     public Order(Order value) {
         this.id = value.id;
@@ -42,14 +48,14 @@ public class Order implements Serializable {
     }
 
     public Order(
-            UInteger id,
-            Byte processing,
-            Byte processingDone,
-            UInteger tableId,
-            UInteger waiterId,
-            UInteger invoiceId,
-            Timestamp createdAt,
-            Timestamp updatedAt
+        UInteger  id,
+        Byte      processing,
+        Byte      processingDone,
+        UInteger  tableId,
+        UInteger  waiterId,
+        UInteger  invoiceId,
+        Timestamp createdAt,
+        Timestamp updatedAt
     ) {
         this.id = id;
         this.processing = processing;
@@ -165,4 +171,81 @@ public class Order implements Serializable {
         sb.append(")");
         return sb.toString();
     }
+
+    public BigDecimal getTotalPriceOfOrder() {
+        return StreamSupport.stream(productPriceForOrder)
+                .map(ProductPriceForOrder::getTotalPriceOfProduct)
+                .reduce(BigDecimal::add)
+                .get();
+    }
+
+    public List<ProductLocalized> getProductsLocalized(Language language) {
+        return StreamSupport.stream(productPriceForOrder)
+                .map(ppfo -> ppfo.getProductInLanguage(language))
+                .collect(Collectors.toList());
+    }
+
+    public static List<ProductPriceForOrder> combineOrders(List<Order> orders) {
+        Map<UInteger, List<ProductPriceForOrder>> collect = StreamSupport.stream(orders)
+                .flatMap(order ->
+                        StreamSupport.stream(order.getProductPriceForOrder()))
+                .collect(Collectors.groupingBy(
+                        ppfo -> ppfo.getProductId()
+                ));
+        List<ProductPriceForOrder> returning = new ArrayList<>();
+        for (Map.Entry<UInteger, List<ProductPriceForOrder>> entry : collect.entrySet()) {
+            UInteger product = entry.getKey();
+            List<ProductPriceForOrder> value = entry.getValue();
+            ProductPriceForOrder ppfo = new ProductPriceForOrder();
+
+            Optional<UInteger> quantity = StreamSupport.stream(value)
+                    .map(ProductPriceForOrder::getQuantity)
+                    .reduce((uInteger, uInteger2) -> UInteger.valueOf(uInteger.longValue() + uInteger2.longValue()));
+
+            if(quantity.isPresent()) {
+                ppfo.setQuantity(quantity.get());
+            }
+
+            if(value.size() > 0) {
+                ppfo.setPricePerProduct(value.get(0).getPricePerProduct());
+                ppfo.setProduct(value.get(0).getProduct());
+            }
+
+            returning.add(ppfo);
+        }
+        return returning;
+    }
+
+    public Location getLocation() {
+        return StreamSupport.stream(productPriceForOrder)
+                .map(ProductPriceForOrder::getProduct)
+                .map(p -> p.getLocationId() == null
+                        ? p.getProductCategory().getLocation()
+                        : p.getLocation())
+                .findFirst().get();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

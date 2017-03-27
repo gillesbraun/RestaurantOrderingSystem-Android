@@ -9,18 +9,17 @@ import org.jooq.types.UInteger;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Waiter implements Serializable {
 
     private static final long serialVersionUID = -72472852;
 
-    private UInteger id;
-    private String name;
+    private UInteger  id;
+    private String    name;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    public Waiter() {
-    }
+    public Waiter() {}
 
     public Waiter(Waiter value) {
         this.id = value.id;
@@ -30,10 +29,10 @@ public class Waiter implements Serializable {
     }
 
     public Waiter(
-            UInteger id,
-            String name,
-            Timestamp createdAt,
-            Timestamp updatedAt
+        UInteger  id,
+        String    name,
+        Timestamp createdAt,
+        Timestamp updatedAt
     ) {
         this.id = id;
         this.name = name;
@@ -75,6 +74,6 @@ public class Waiter implements Serializable {
 
     @Override
     public String toString() {
-        return "N° " + id + ": " + name;
+        return "N\u00b0 " +id+": "+name;
     }
 }

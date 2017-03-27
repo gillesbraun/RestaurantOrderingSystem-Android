@@ -7,27 +7,29 @@ package lu.btsi.bragi.ros.models.pojos;
 import org.jooq.types.UInteger;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
+
+import static java8.util.stream.StreamSupport.stream;
 
 
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Invoice implements Serializable {
 
     private static final long serialVersionUID = -852538769;
 
-    private UInteger id;
-    private Byte paid;
+    private UInteger  id;
+    private Byte      paid;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private List<Order> orders;
 
-    public Invoice() {
-    }
+    public Invoice() {}
 
     public Invoice(Invoice value) {
         this.id = value.id;
@@ -37,10 +39,10 @@ public class Invoice implements Serializable {
     }
 
     public Invoice(
-            UInteger id,
-            Byte paid,
-            Timestamp createdAt,
-            Timestamp updatedAt
+        UInteger  id,
+        Byte      paid,
+        Timestamp createdAt,
+        Timestamp updatedAt
     ) {
         this.id = id;
         this.paid = paid;
@@ -102,13 +104,13 @@ public class Invoice implements Serializable {
     }
 
     public String getWaiters() {
-        if (getOrders() == null)
+        if(getOrders() == null)
             return "";
-        return getOrders().stream().map(Order::getWaiter).map(Waiter::getName).collect(Collectors.joining(", "));
+        return stream(getOrders()).map(Order::getWaiter).map(Waiter::getName).distinct().collect(Collectors.joining(", "));
     }
 
     public UInteger getTable() {
-        if (getOrders() == null)
+        if(getOrders() == null)
             return null;
         return getOrders().stream()
                 .map(Order::getTableId)
@@ -116,68 +118,42 @@ public class Invoice implements Serializable {
                 .orElse(null);
     }
 
-    public List<InvoiceEntry> getProductListInvoice(String languageCode, String currency) {
-        if (getOrders() == null)
+    public List<InvoiceEntry> getProductListInvoice(Language language) {
+        if(getOrders() == null)
             return new ArrayList<>();
 
-        List<ProductPriceForOrder> productPriceForOrderList = getOrders().stream()
-                .flatMap(order -> order.getProductPriceForOrder()
-                        .stream()).collect(toList());
-
-        List<InvoiceEntry> invoiceEntryList = new ArrayList<>();
-
-        // Iterate through product localized in given language
-        productPriceForOrderList.stream()
-                .map(ProductPriceForOrder::getProduct)
-                .flatMap(product ->
-                        product.getProductLocalized()
-                                .stream()
-                                .filter(pL ->
-                                        pL.getLanguageCode()
-                                                .equals(languageCode))
-                ).forEach(productLocalized -> {
-            // Get product info (quantity, price of product in order
-            productPriceForOrderList.stream()
-                    .filter(ppfo -> ppfo.getProductId().equals(productLocalized.getProductId()))
-                    .findFirst()
-                    .ifPresent(productInfo -> {
-
-                        String totalPriceOfProduct = String.format("%.2f " + currency,
-                                Math.round(
-                                        productInfo.getQuantity().longValue() * productInfo.getPricePerProduct().doubleValue() * 100D
-                                ) / 100D);
-                        invoiceEntryList.add(
+        List<InvoiceEntry> invoiceEntryList =
+                        stream(Order.combineOrders(orders))
+                        .map(ppfo ->
                                 new InvoiceEntry(
-                                        productInfo.getQuantity() + "x " + productLocalized.getLabel(),
-                                        String.format("%.2f " + currency, productInfo.getPricePerProduct()),
-                                        totalPriceOfProduct
+                                        ppfo.getQuantity(),
+                                        ppfo.getProductInLanguage(language).getLabel(),
+                                        ppfo.getPricePerProduct().doubleValue(),
+                                        ppfo.getTotalPriceOfProduct().doubleValue()
                                 )
-                        );
+                        )
 
-                    });
-        });
+                .collect(Collectors.toList());
         return invoiceEntryList;
     }
 
-    public String getTotalPrice(String currency) {
-        if (getOrders() == null)
-            return "";
-
-        List<ProductPriceForOrder> productPriceForOrderList = getOrders().stream()
-                .flatMap(order -> order.getProductPriceForOrder()
-                        .stream()).collect(toList());
-
-        double total = productPriceForOrderList.stream()
-                .mapToDouble(ppfo -> ppfo.getPricePerProduct().doubleValue() * ppfo.getQuantity().longValue())
-                .sum();
-        total = Math.round(total * 100D) / 100D;
-        return String.format("%.2f " + currency, total);
+    public BigDecimal getTotalPrice() {
+        if(getOrders() == null)
+            return null;
+        BigDecimal total = StreamSupport.stream(orders)
+                .map(Order::getTotalPriceOfOrder)
+                .reduce(BigDecimal::add)
+                .get();
+        return total;
     }
 
     public static class InvoiceEntry {
-        public final String productName, productPrice, productPriceTotal;
+        public final String productName;
+        public final double productPrice, productPriceTotal;
+        public final UInteger quantity;
 
-        public InvoiceEntry(String productName, String productPrice, String productPriceTotal) {
+        public InvoiceEntry(UInteger quantity, String productName, double productPrice, double productPriceTotal) {
+            this.quantity = quantity;
             this.productName = productName;
             this.productPrice = productPrice;
             this.productPriceTotal = productPriceTotal;

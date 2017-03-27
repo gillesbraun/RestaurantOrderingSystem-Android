@@ -10,20 +10,22 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+import java8.util.stream.StreamSupport;
+
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProductCategory implements Serializable {
 
     private static final long serialVersionUID = -1752109739;
 
-    private UInteger id;
-    private String imageUrl;
-    private UInteger locationId;
+    private UInteger  id;
+    private String    imageUrl;
+    private UInteger  locationId;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private List<ProductCategoryLocalized> productCategoryLocalized;
+    private Location location;
 
-    public ProductCategory() {
-    }
+    public ProductCategory() {}
 
     public ProductCategory(ProductCategory value) {
         this.id = value.id;
@@ -34,11 +36,11 @@ public class ProductCategory implements Serializable {
     }
 
     public ProductCategory(
-            UInteger id,
-            String imageUrl,
-            UInteger locationId,
-            Timestamp createdAt,
-            Timestamp updatedAt
+        UInteger  id,
+        String    imageUrl,
+        UInteger  locationId,
+        Timestamp createdAt,
+        Timestamp updatedAt
     ) {
         this.id = id;
         this.imageUrl = imageUrl;
@@ -106,14 +108,29 @@ public class ProductCategory implements Serializable {
 
     @Override
     public String toString() {
-        return "N° " + id;
+        return "N\u00b0 " +id;
     }
 
     public void setProductCategoryLocalized(List<ProductCategoryLocalized> productCategoryLocalized) {
         this.productCategoryLocalized = productCategoryLocalized;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
     public List<ProductCategoryLocalized> getProductCategoryLocalized() {
         return productCategoryLocalized;
+    }
+
+    public ProductCategoryLocalized getProductCategoryTranslation(Language language) {
+        return StreamSupport.stream(productCategoryLocalized)
+                .filter(pcl -> pcl.getLanguageCode().equals(language.getCode()))
+                .findFirst()
+                .get();
     }
 }

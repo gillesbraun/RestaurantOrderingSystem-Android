@@ -9,19 +9,18 @@ import org.jooq.types.UInteger;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProductAllergen implements Serializable {
 
     private static final long serialVersionUID = 294400483;
 
-    private UInteger allergenId;
-    private UInteger productId;
+    private UInteger  allergenId;
+    private UInteger  productId;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Allergen allergen;
 
-    public ProductAllergen() {
-    }
+    public ProductAllergen() {}
 
     public ProductAllergen(ProductAllergen value) {
         this.allergenId = value.allergenId;
@@ -31,10 +30,10 @@ public class ProductAllergen implements Serializable {
     }
 
     public ProductAllergen(
-            UInteger allergenId,
-            UInteger productId,
-            Timestamp createdAt,
-            Timestamp updatedAt
+        UInteger  allergenId,
+        UInteger  productId,
+        Timestamp createdAt,
+        Timestamp updatedAt
     ) {
         this.allergenId = allergenId;
         this.productId = productId;

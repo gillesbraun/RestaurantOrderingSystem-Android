@@ -10,21 +10,21 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProductPriceForOrder implements Serializable {
 
     private static final long serialVersionUID = -1554895718;
 
-    private UInteger productId;
-    private UInteger orderId;
+    private UInteger  productId;
+    private UInteger  orderId;
     private BigDecimal pricePerProduct;
-    private UInteger quantity;
+    private UInteger  quantity;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private Product product;
+    private Product   product;
 
-    public ProductPriceForOrder() {
-    }
+    public ProductPriceForOrder() {}
 
     public ProductPriceForOrder(ProductPriceForOrder value) {
         this.productId = value.productId;
@@ -36,10 +36,10 @@ public class ProductPriceForOrder implements Serializable {
     }
 
     public ProductPriceForOrder(
-            UInteger productId,
-            UInteger orderId,
-            BigDecimal pricePerProduct,
-            UInteger quantity,
+            UInteger  productId,
+            UInteger  orderId,
+            BigDecimal    pricePerProduct,
+            UInteger  quantity,
             Timestamp createdAt,
             Timestamp updatedAt
     ) {
@@ -120,5 +120,13 @@ public class ProductPriceForOrder implements Serializable {
 
     public Product getProduct() {
         return product;
+    }
+
+    public BigDecimal getTotalPriceOfProduct() {
+        return pricePerProduct.multiply(BigDecimal.valueOf(quantity.longValue()));
+    }
+
+    public ProductLocalized getProductInLanguage(Language language) {
+        return product.getProductInLanguage(language);
     }
 }
