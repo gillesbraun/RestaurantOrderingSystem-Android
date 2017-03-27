@@ -98,4 +98,11 @@ public class HomeFragment extends Fragment {
             }
         }
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        OrderManager.getInstance().clear();
+        ((MainActivity)getActivity()).updateFabVisibility();
+    }
 }

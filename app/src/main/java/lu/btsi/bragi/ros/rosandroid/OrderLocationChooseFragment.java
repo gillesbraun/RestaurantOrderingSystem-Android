@@ -102,4 +102,11 @@ public class OrderLocationChooseFragment extends Fragment {
             return convertView;
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        OrderManager.getInstance().clear();
+        ((MainActivity)getActivity()).updateFabVisibility();
+    }
 }

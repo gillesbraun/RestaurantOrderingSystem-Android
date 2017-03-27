@@ -19,7 +19,7 @@ import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
  * Created by gillesbraun on 16/03/2017.
  */
 
-public class LanguageChooseFragment extends DialogFragment {
+public class LanguageChooseDialog extends DialogFragment {
     private List<Language> languages;
 
     public void setLanguages(List<Language> languages) {
@@ -47,9 +47,9 @@ public class LanguageChooseFragment extends DialogFragment {
         ConnectionManager.getInstance().sendWithAction(new MessageGet<>(Language.class), m -> {
             try {
                 List<Language> languages = new Message<Language>(m).getPayload();
-                LanguageChooseFragment languageChooseFragment = new LanguageChooseFragment();
-                languageChooseFragment.setLanguages(languages);
-                mainActivity.showDialogFragment(languageChooseFragment);
+                LanguageChooseDialog languageChooseDialog = new LanguageChooseDialog();
+                languageChooseDialog.setLanguages(languages);
+                mainActivity.showDialogFragment(languageChooseDialog);
             } catch (MessageException e) {
                 e.printStackTrace();
             }

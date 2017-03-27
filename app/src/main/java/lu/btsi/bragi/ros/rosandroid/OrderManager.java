@@ -106,4 +106,8 @@ public class OrderManager {
                     .ifPresent(ppfo -> ppfo.setQuantity(UInteger.valueOf(ppfo.getQuantity().longValue() + quantity)));
         }
     }
+
+    public void clear() {
+        order = null;
+    }
 }

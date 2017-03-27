@@ -113,6 +113,8 @@ public class OrdersFragment extends Fragment implements BroadcastCallback {
     public void onResume() {
         super.onResume();
         ((MainActivity)getActivity()).setMenuEditLocationVisibility(true);
+        OrderManager.getInstance().clear();
+        ((MainActivity)getActivity()).updateFabVisibility();
     }
 
     @Override

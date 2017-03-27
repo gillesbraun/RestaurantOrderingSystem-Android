@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity
                 fragNavController.pushFragment(new OrdersFragment());
             }
         } else if (id == R.id.nav_change_language) {
-            LanguageChooseFragment.showLanguageSelectDialog(this);
+            LanguageChooseDialog.showLanguageSelectDialog(this);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -216,6 +216,8 @@ public class MainActivity extends AppCompatActivity
 
     public void updateFabVisibility() {
         OrderManager manager = OrderManager.getInstance();
+        if(fab_oderSubmit == null || menu_edit_order == null)
+            return;
         if(manager.hasOpenOrder() && manager.orderHasProducts()) {
             fab_oderSubmit.setVisibility(View.VISIBLE);
         } else {
