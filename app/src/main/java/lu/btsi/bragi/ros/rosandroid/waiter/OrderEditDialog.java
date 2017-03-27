@@ -58,6 +58,9 @@ public class OrderEditDialog extends DialogFragment {
         @BindView(R.id.single_order_textView_price)
         TextView textViewPrice;
 
+        @BindView(R.id.single_order_textView_unitprice)
+        TextView textViewUnitPrice;
+
         @BindView(R.id.single_order_textView_productName)
         TextView textViewProductName;
 
@@ -101,8 +104,10 @@ public class OrderEditDialog extends DialogFragment {
             productPriceForOrder = order.getProductPriceForOrder().get(position);
             double price = productPriceForOrder.getPricePerProduct().doubleValue() * productPriceForOrder.getQuantity().longValue();
             String priceStr = String.format(Locale.GERMANY, "%.2f €", price);
+            String unitPriceStr = String.format(Config.getInstance().getLocale(getContext()), "%.2f €", productPriceForOrder.getPricePerProduct().doubleValue());
 
             textViewPrice.setText(priceStr);
+            textViewUnitPrice.setText(unitPriceStr);
 
             textViewQuantity.setText(String.valueOf(productPriceForOrder.getQuantity().longValue()));
 

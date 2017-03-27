@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import org.jooq.types.UInteger;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,7 +42,7 @@ public class SingleProductDialog extends DialogFragment {
     private Product product;
     private String language = Config.getInstance().getLanguage().getCode();
 
-    @BindView(R.id.content_product_price)
+    @BindView(R.id.content_product_unitprice)
     TextView priceTextView;
 
     @BindView(R.id.content_product_title)
@@ -55,6 +56,9 @@ public class SingleProductDialog extends DialogFragment {
 
     @BindView(R.id.content_product_textView_numberOfItems)
     TextView textViewNumberOfItems;
+
+    @BindView(R.id.content_product_price)
+    TextView textViewTotalPrice;
 
     @BindView(R.id.content_product_button_decreaseItemCount)
     Button buttonDecreaseItemCount;
@@ -87,6 +91,7 @@ public class SingleProductDialog extends DialogFragment {
         titleTextView.setText(productTranslation.get().getLabel());
         String price = String.format(Locale.GERMANY, "%.2f €", product.getPrice().doubleValue());
         priceTextView.setText(price);
+        textViewTotalPrice.setText(price);
 
         if(allergens.size() == 0) {
             allergensTitle.setVisibility(View.GONE);
@@ -121,6 +126,9 @@ public class SingleProductDialog extends DialogFragment {
     private void updateQuantityLabel() {
         textViewNumberOfItems.setText(String.valueOf(currentQuantity));
         buttonDecreaseItemCount.setEnabled(currentQuantity > 1);
+        double totalPrice = product.getPrice().multiply(BigDecimal.valueOf(currentQuantity)).doubleValue();
+        String totalStr = String.format(Config.getInstance().getLocale(getContext()), "%.2f", totalPrice);
+        textViewTotalPrice.setText(totalStr);
     }
 
     private class AllergenAdapter extends BaseAdapter {
