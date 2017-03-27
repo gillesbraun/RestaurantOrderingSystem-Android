@@ -59,4 +59,5 @@
     <string name="dialog_order_review_title">Review items before confirm</string>
     <string name="dialog_order_review_cancel">Don\'t send</string>
     <string name="order_textView_location">Current Location: %s</string>
+    <string name="order_card_table">Table: %s</string>
 </resources>

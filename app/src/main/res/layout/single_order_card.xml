@@ -32,7 +32,8 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:id="@+id/order_card_waiter"
@@ -40,7 +41,6 @@
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_marginEnd="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginBottom="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -52,6 +52,14 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/order_card_table"
+            android:text="@string/order_card_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_marginBottom="10dp" />
 
         <LinearLayout
             android:columnCount="2"

@@ -74,6 +74,8 @@ class OrdersRecyclerView extends RecyclerView.Adapter<OrdersRecyclerView.OrderVi
 
         holder.textViewTitle.setText(String.format(Config.getInstance().getLocale(context), holder.strTitle, order.getId().toString()));
 
+        holder.textViewTable.setText(String.format(Config.getInstance().getLocale(context), holder.strTable, order.getTable().getId().toString()));
+
         if ((order.getProcessing() == (byte) 1)) {
             holder.checkBoxIsProcessing.setVisibility(VISIBLE);
         } else {
@@ -141,8 +143,14 @@ class OrdersRecyclerView extends RecyclerView.Adapter<OrdersRecyclerView.OrderVi
         @BindView(R.id.order_card_list_container)
         LinearLayout linearLayoutContainer;
 
+        @BindView(R.id.order_card_table)
+        TextView textViewTable;
+
         @BindString(R.string.order_card_time)
         String strTime;
+
+        @BindString(R.string.order_card_table)
+        String strTable;
 
         @BindString(R.string.order_card_waiter)
         String strWaiter;

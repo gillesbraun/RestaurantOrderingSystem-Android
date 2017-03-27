@@ -141,6 +141,7 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
         super.onResume();
         ((MainActivity)getActivity()).setLanguageObserver(this);
         ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(true);
+        updateView();
     }
 
     @Override
