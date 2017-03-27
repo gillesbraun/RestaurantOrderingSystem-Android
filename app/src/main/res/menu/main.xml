@@ -19,6 +19,13 @@
         app:showAsAction="always"
         />
     <item
+        android:id="@+id/menu_change_waiter"
+        android:visible="false"
+        android:title="Change Waiter"
+        android:icon="@mipmap/ic_people_white_24dp"
+        app:showAsAction="always"
+        />
+    <item
         android:id="@+id/menu_change_location"
         android:visible="false"
         android:title="Change Location"

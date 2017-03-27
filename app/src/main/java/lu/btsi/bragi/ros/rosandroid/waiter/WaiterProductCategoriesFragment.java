@@ -87,7 +87,7 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
                     }
                     WaiterProductCategoriesFragment.this.categories = new ArrayList<>(categories);
                     WaiterProductCategoriesFragment.this.products = payload;
-                    WaiterProductCategoriesFragment.this.updateView();
+                    updateView();
                 } catch (MessageException e) {
                     e.printStackTrace();
                 }
@@ -103,14 +103,8 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    View view = WaiterProductCategoriesFragment.this.getView();
-                    if (WaiterProductCategoriesFragment.this.getActivity().getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
-                        layoutManager = new GridLayoutManager(view.getContext(), 3);
-                    } else {
-                        layoutManager = new GridLayoutManager(view.getContext(), 2);
-                    }
+                    configurationChange();
                     adapter = new ProductCategoryRecyclerAdapter(categories, products, ConnectionManager.getInstance().getRemoteIPAdress(), (MainActivity) WaiterProductCategoriesFragment.this.getActivity());
-                    recyclerView.setLayoutManager(layoutManager);
                     recyclerView.setAdapter(adapter);
                 }
             });
@@ -120,12 +114,18 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.actionbar_productcategories_select);
-        updateView();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        configurationChange();
+    }
+
+    private void configurationChange() {
+        View view = getView();
+        if(view == null || view.getContext() == null)
+            return;
         if(recyclerView != null) {
             if(getActivity().getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
                 layoutManager = new GridLayoutManager(getView().getContext(), 3);
@@ -140,10 +140,17 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
     public void onResume() {
         super.onResume();
         ((MainActivity)getActivity()).setLanguageObserver(this);
+        ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(true);
     }
 
     @Override
     public void languageChanged() {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(false);
     }
 }

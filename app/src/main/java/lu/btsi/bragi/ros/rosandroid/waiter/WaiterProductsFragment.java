@@ -98,10 +98,18 @@ public class WaiterProductsFragment extends Fragment implements AdapterView.OnIt
     public void onResume() {
         super.onResume();
         ((MainActivity)getActivity()).setLanguageObserver(this);
+        ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(true);
     }
 
     @Override
     public void languageChanged() {
         adapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(false);
     }
 }

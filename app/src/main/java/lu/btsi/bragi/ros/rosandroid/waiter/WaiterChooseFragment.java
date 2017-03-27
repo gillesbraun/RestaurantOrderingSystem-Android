@@ -11,8 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.ncapdevi.fragnav.FragNavController;
-
 import java.util.List;
 
 import lu.btsi.bragi.ros.models.message.Message;
@@ -56,7 +54,7 @@ public class WaiterChooseFragment extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Config.getInstance().setWaiter(waiters.get(position));
-                            ((MainActivity) getActivity()).switchTab(FragNavController.TAB2);
+                            ((MainActivity) getActivity()).pushFragment(new WaiterHomeFragment());
                         }
                     });
                 } catch (MessageException e) {

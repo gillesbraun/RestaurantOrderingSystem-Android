@@ -12,10 +12,6 @@
                 android:id="@+id/nav_waiter"
                 android:icon="@drawable/ic_restaurant"
                 android:title="@string/sidebar_waitermode" />
-            <item
-                android:id="@+id/nav_change_waiter"
-                android:icon="@drawable/ic_people"
-                android:title="@string/sidebar_changewaiter" />
         </menu>
     </item>
     <item android:title="@string/sidebar_cat_order">

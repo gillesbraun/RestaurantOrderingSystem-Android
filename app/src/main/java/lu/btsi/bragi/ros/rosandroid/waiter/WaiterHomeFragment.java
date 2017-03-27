@@ -86,4 +86,16 @@ public class WaiterHomeFragment extends Fragment {
                 .build()
                 .show();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(true);
+    }
 }

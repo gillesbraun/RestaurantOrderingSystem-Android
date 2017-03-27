@@ -30,12 +30,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionCallback;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
-import lu.btsi.bragi.ros.rosandroid.waiter.OrderEditDialogFragment;
+import lu.btsi.bragi.ros.rosandroid.waiter.OrderEditDialog;
 import lu.btsi.bragi.ros.rosandroid.waiter.ReviewOrderDialog;
 import lu.btsi.bragi.ros.rosandroid.waiter.WaiterChooseFragment;
 import lu.btsi.bragi.ros.rosandroid.waiter.WaiterHomeFragment;
@@ -46,14 +45,13 @@ public class MainActivity extends AppCompatActivity
     List<Fragment> fragments = new ArrayList<>(6);
     private FragNavController fragNavController;
     private FloatingActionButton fab_oderSubmit;
-    private MenuItem menu_edit_order, menu_change_location;
+    private MenuItem menu_edit_order, menu_change_location, menu_change_waiter;
     private LanguageObserver languageObserver;
 
     public MainActivity() {
         ConnectionManager.init(this);
 
         fragments.add(new HomeFragment());
-        fragments.add(new WaiterHomeFragment());
         fragments.add(new WaiterChooseFragment());
         fragments.add(new OrderLocationChooseFragment());
     }
@@ -125,6 +123,9 @@ public class MainActivity extends AppCompatActivity
         menu_change_location = menu.findItem(R.id.menu_change_location);
         menu_change_location.setOnMenuItemClickListener(menuChangeLocationPressed);
 
+        menu_change_waiter = menu.findItem(R.id.menu_change_waiter);
+        menu_change_waiter.setOnMenuItemClickListener(menuChangeWaiterPressed);
+
         return true;
     }
 
@@ -156,22 +157,17 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             fragNavController.switchTab(FragNavController.TAB1);
         } else if (id == R.id.nav_waiter) {
-            if(Config.getInstance().getWaiter() == null)
-                fragNavController.switchTab(FragNavController.TAB3);
-            else
-                fragNavController.switchTab(FragNavController.TAB2);
-        } else if (id == R.id.nav_change_waiter) {
-            if(Config.getInstance().getLocation() != null)
-                Collections.replaceAll(fragments, fragments.get(FragNavController.TAB3), new OrdersFragment());
-            fragNavController.switchTab(FragNavController.TAB3);
+            fragNavController.switchTab(FragNavController.TAB2);
+            if(Config.getInstance().getWaiter() != null) {
+                fragNavController.pushFragment(new WaiterHomeFragment());
+            }
         } else if (id == R.id.nav_orders_view) {
-            fragNavController.switchTab(FragNavController.TAB4);
+            fragNavController.switchTab(FragNavController.TAB3);
             if(Config.getInstance().getLocation() != null) {
                 fragNavController.pushFragment(new OrdersFragment());
             }
         } else if (id == R.id.nav_change_language) {
             LanguageChooseFragment.showLanguageSelectDialog(this);
-            //fragNavController.switchTab(FragNavController.TAB5);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -254,7 +250,7 @@ public class MainActivity extends AppCompatActivity
     private MenuItem.OnMenuItemClickListener menuEditOrderPressed = new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            fragNavController.showDialogFragment(new OrderEditDialogFragment());
+            fragNavController.showDialogFragment(new OrderEditDialog());
             return true;
         }
     };
@@ -268,6 +264,16 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
+    private MenuItem.OnMenuItemClickListener menuChangeWaiterPressed = new MenuItem.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            Config.getInstance().setWaiter(null);
+            fragNavController.clearStack();
+            fragNavController.pushFragment(new WaiterChooseFragment());
+            return true;
+        }
+    };
+
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null && scanResult.getContents() != null) {
@@ -277,6 +283,10 @@ public class MainActivity extends AppCompatActivity
 
     public void setMenuEditLocationVisibility(boolean b) {
         menu_change_location.setVisible(b);
+    }
+
+    public void setMenuChangeWaiterVisibility(boolean b) {
+        menu_change_waiter.setVisible(b);
     }
 
     public void setLanguageObserver(LanguageObserver languageObserver) {

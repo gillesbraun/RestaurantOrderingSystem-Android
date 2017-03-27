@@ -29,7 +29,7 @@ import lu.btsi.bragi.ros.rosandroid.R;
  * Created by gillesbraun on 15/03/2017.
  */
 
-public class OrderEditDialogFragment extends DialogFragment {
+public class OrderEditDialog extends DialogFragment {
     @BindView(R.id.dialog_order_listView)
     ListView productListView;
 
