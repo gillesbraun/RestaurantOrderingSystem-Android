@@ -47,7 +47,7 @@
     <string name="order_location_title">Select the location of this tablet</string>
     <string name="order_location_subtitle">This is used for filtering which products are shown from the orders.  For example, drinks which are in the \'bar\' category shouldn\'t be shown in the kitchen tablet</string>
     <string name="actionbar_language_choose">Language Chooser</string>
-    <string name="actionbar_orders">Viewing Orders</string>
+    <string name="actionbar_orders">Viewing Orders for: %s</string>
     <string name="actionbar_location_choose">Choose a location</string>
     <string name="actionbar_waiter_choose">Change Waiter</string>
     <string name="actionbar_waiter_home">Create an Order</string>

@@ -4,13 +4,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/orders_textView_location"
-        android:padding="5dp"
-        style="@style/Base.TextAppearance.AppCompat.Medium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/orders_recyclerView"
         android:layout_width="match_parent"

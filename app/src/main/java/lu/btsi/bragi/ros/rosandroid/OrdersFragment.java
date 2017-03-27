@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import org.jooq.types.UInteger;
 
@@ -28,7 +27,6 @@ import lu.btsi.bragi.ros.models.message.MessageGetQuery;
 import lu.btsi.bragi.ros.models.message.Query;
 import lu.btsi.bragi.ros.models.message.QueryParam;
 import lu.btsi.bragi.ros.models.message.QueryType;
-import lu.btsi.bragi.ros.models.pojos.Location;
 import lu.btsi.bragi.ros.models.pojos.Order;
 import lu.btsi.bragi.ros.rosandroid.connection.BroadcastCallback;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
@@ -44,11 +42,8 @@ public class OrdersFragment extends Fragment implements BroadcastCallback {
     RecyclerView recyclerView;
     private List<Order> orders;
 
-    @BindView(R.id.orders_textView_location)
-    TextView textViewLocation;
-
-    @BindString(R.string.order_textView_location)
-    String locationStr;
+    @BindString(R.string.actionbar_orders)
+    String actionbarStr;
 
     @Nullable
     @Override
@@ -58,9 +53,6 @@ public class OrdersFragment extends Fragment implements BroadcastCallback {
         recyclerView.setAdapter(new OrdersRecyclerView(new ArrayList<>(), getContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         ConnectionManager.getInstance().addBroadcastCallback(this);
-        Location location = Config.getInstance().getLocation();
-        if(location != null)
-            textViewLocation.setText(String.format(Config.getInstance().getLocale(getContext()), locationStr, location.getDescription()));
         return view;
     }
 
@@ -104,7 +96,10 @@ public class OrdersFragment extends Fragment implements BroadcastCallback {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.actionbar_orders);
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle(String.format(
+                Config.getInstance().getLocale(view.getContext()),
+                actionbarStr,
+                Config.getInstance().getLocation().getDescription()));
         loadData();
     }
 
