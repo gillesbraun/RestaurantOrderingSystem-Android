@@ -62,7 +62,8 @@ public class OrderLocationChooseFragment extends Fragment {
         ConnectionManager.getInstance().sendWithAction(new MessageGet<>(Location.class), m -> {
             try {
                 locations = new Message<Location>(m).getPayload();
-                listViewLocations.setAdapter(new LocationAdapter(getContext(), locations));
+                if(getContext() != null)
+                    listViewLocations.setAdapter(new LocationAdapter(getContext(), locations));
             } catch (MessageException e) {
                 e.printStackTrace();
             }

@@ -18,4 +18,11 @@
         android:icon="@mipmap/ic_edit_white_24dp"
         app:showAsAction="always"
         />
+    <item
+        android:id="@+id/menu_change_location"
+        android:visible="false"
+        android:title="Change Location"
+        android:icon="@mipmap/ic_edit_location_white_24dp"
+        app:showAsAction="always"
+        />
 </menu>

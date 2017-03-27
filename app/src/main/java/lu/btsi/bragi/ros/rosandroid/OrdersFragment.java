@@ -12,12 +12,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.jooq.types.UInteger;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import lu.btsi.bragi.ros.models.message.Message;
@@ -26,6 +28,7 @@ import lu.btsi.bragi.ros.models.message.MessageGetQuery;
 import lu.btsi.bragi.ros.models.message.Query;
 import lu.btsi.bragi.ros.models.message.QueryParam;
 import lu.btsi.bragi.ros.models.message.QueryType;
+import lu.btsi.bragi.ros.models.pojos.Location;
 import lu.btsi.bragi.ros.models.pojos.Order;
 import lu.btsi.bragi.ros.rosandroid.connection.BroadcastCallback;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
@@ -41,6 +44,12 @@ public class OrdersFragment extends Fragment implements BroadcastCallback {
     RecyclerView recyclerView;
     private List<Order> orders;
 
+    @BindView(R.id.orders_textView_location)
+    TextView textViewLocation;
+
+    @BindString(R.string.order_textView_location)
+    String locationStr;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,6 +58,9 @@ public class OrdersFragment extends Fragment implements BroadcastCallback {
         recyclerView.setAdapter(new OrdersRecyclerView(new ArrayList<>(), getContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         ConnectionManager.getInstance().addBroadcastCallback(this);
+        Location location = Config.getInstance().getLocation();
+        if(location != null)
+            textViewLocation.setText(String.format(Config.getInstance().getLocale(getContext()), locationStr, location.getDescription()));
         return view;
     }
 
@@ -92,6 +104,18 @@ public class OrdersFragment extends Fragment implements BroadcastCallback {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.actionbar_orders);
         loadData();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity)getActivity()).setMenuEditLocationVisibility(false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity)getActivity()).setMenuEditLocationVisibility(true);
     }
 
     @Override

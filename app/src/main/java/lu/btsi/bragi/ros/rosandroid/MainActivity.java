@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
     List<Fragment> fragments = new ArrayList<>(6);
     private FragNavController fragNavController;
     private FloatingActionButton fab_oderSubmit;
-    private MenuItem menu_edit_order;
+    private MenuItem menu_edit_order, menu_change_location;
 
     public MainActivity() {
         ConnectionManager.init(this);
@@ -121,6 +121,9 @@ public class MainActivity extends AppCompatActivity
 
         menu_edit_order = menu.findItem(R.id.menu_edit_order);
         menu_edit_order.setOnMenuItemClickListener(menuEditOrderPressed);
+
+        menu_change_location = menu.findItem(R.id.menu_change_location);
+        menu_change_location.setOnMenuItemClickListener(menuChangeLocationPressed);
 
         return true;
     }
@@ -255,11 +258,23 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
+    private MenuItem.OnMenuItemClickListener menuChangeLocationPressed = new MenuItem.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            Config.getInstance().setLocation(null);
+            fragNavController.replaceFragment(new OrderLocationChooseFragment());
+            return true;
+        }
+    };
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null && scanResult.getContents() != null) {
             ConnectionManager.getInstance().setHost(scanResult.getContents());
         }
+    }
+
+    public void setMenuEditLocationVisibility(boolean b) {
+        menu_change_location.setVisible(b);
     }
 }
