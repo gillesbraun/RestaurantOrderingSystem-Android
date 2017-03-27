@@ -37,6 +37,7 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     private boolean isConnected = false;
     private ConnectionCallback connectionCallback;
     private Map<UUID, MessageCallback> callbackMap = new HashMap<>();
+    private final List<BroadcastCallback> broadcastCallbacks = new ArrayList<>();
     private final Set<Message> unsentMessages = new HashSet<>();
 
     private static ConnectionManager instance;
@@ -125,7 +126,9 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
 
     private void loadSettings() {
         if(preferences != null) {
-            setHost(preferences.getString("host", null));
+            String host = preferences.getString("host", null);
+            if(host != null)
+                setHost(host);
         }
     }
 
@@ -157,7 +160,14 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
                 callbackMap.remove(messageUUID);
             });
         } else {
-            Log.e("ROS", text);
+            MessageType messageType = Message.messageType(text);
+            if(messageType.equals(MessageType.Error)) {
+                Log.e("ROS", text);
+            } else if(messageType.equals(MessageType.Broadcast)) {
+                for (BroadcastCallback broadcastCallback : broadcastCallbacks) {
+                    broadcastCallback.handleBroadCast();
+                }
+            }
         }
     }
 
@@ -168,6 +178,8 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     public void setHost(String host) {
         this.host = host;
         isConnected = false;
+        if(host == null)
+            return;
         if(host.contains(":")) {
             url = URI.create("ws://" + host);
         } else {
@@ -179,5 +191,9 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
 
     public String getHost() {
         return host;
+    }
+
+    public void addBroadcastCallback(BroadcastCallback broadcastCallback) {
+        broadcastCallbacks.add(broadcastCallback);
     }
 }

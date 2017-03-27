@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.jooq.types.UInteger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +22,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import lu.btsi.bragi.ros.models.message.Message;
 import lu.btsi.bragi.ros.models.message.MessageException;
-import lu.btsi.bragi.ros.models.message.MessageGet;
+import lu.btsi.bragi.ros.models.message.MessageGetQuery;
+import lu.btsi.bragi.ros.models.message.Query;
+import lu.btsi.bragi.ros.models.message.QueryParam;
+import lu.btsi.bragi.ros.models.message.QueryType;
 import lu.btsi.bragi.ros.models.pojos.Order;
+import lu.btsi.bragi.ros.rosandroid.connection.BroadcastCallback;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
@@ -30,7 +36,7 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
  * Created by gillesbraun on 17/03/2017.
  */
 
-public class OrdersFragment extends Fragment {
+public class OrdersFragment extends Fragment implements BroadcastCallback {
     @BindView(R.id.orders_recyclerView)
     RecyclerView recyclerView;
     private List<Order> orders;
@@ -42,11 +48,16 @@ public class OrdersFragment extends Fragment {
         ButterKnife.bind(this, view);
         recyclerView.setAdapter(new OrdersRecyclerView(new ArrayList<>(), getContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        ConnectionManager.getInstance().addBroadcastCallback(this);
         return view;
     }
 
     private void loadData() {
-        ConnectionManager.getInstance().sendWithAction(new MessageGet<>(Order.class), m -> {
+        Message messageQuery = new MessageGetQuery<>(
+                Order.class,
+                new Query(QueryType.Open_Orders_For_Location,
+                        new QueryParam("location", UInteger.class, Config.getInstance().getLocation().getId())));
+        ConnectionManager.getInstance().sendWithAction(messageQuery, m -> {
             try {
                 orders = new Message<Order>(m).getPayload();
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -80,6 +91,11 @@ public class OrdersFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.actionbar_orders);
+        loadData();
+    }
+
+    @Override
+    public void handleBroadCast() {
         loadData();
     }
 }

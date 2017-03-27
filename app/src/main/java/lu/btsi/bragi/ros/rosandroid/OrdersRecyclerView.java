@@ -24,13 +24,11 @@ import java8.util.stream.StreamSupport;
 import lu.btsi.bragi.ros.models.message.Message;
 import lu.btsi.bragi.ros.models.message.MessageType;
 import lu.btsi.bragi.ros.models.pojos.Order;
-import lu.btsi.bragi.ros.models.pojos.ProductLocalized;
 import lu.btsi.bragi.ros.models.pojos.ProductPriceForOrder;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static java8.util.stream.Collectors.toList;
 
 /**
  * Created by gillesbraun on 17/03/2017.
@@ -58,14 +56,6 @@ class OrdersRecyclerView extends RecyclerView.Adapter<OrdersRecyclerView.OrderVi
     public void onBindViewHolder(OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
 
-        List<ProductLocalized> localizedList = StreamSupport.stream(order.getProductPriceForOrder())
-                .map(ProductPriceForOrder::getProduct)
-                .flatMap(
-                        product ->
-                                StreamSupport.stream(product.getProductLocalized())
-                                        .filter(pL -> pL.getLanguageCode().equals(Config.getInstance().getLanguage().getCode()))
-                )
-                .collect(toList());
         ProductLocalizedWithQuantityAdapter adapter = new ProductLocalizedWithQuantityAdapter(
                 context, order.getProductPriceForOrder());
 
