@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,15 +18,16 @@ import java.util.Locale;
 import java8.util.stream.StreamSupport;
 import lu.btsi.bragi.ros.models.pojos.Product;
 import lu.btsi.bragi.ros.rosandroid.Config;
+import lu.btsi.bragi.ros.rosandroid.LanguageObserver;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.R;
 
 /**
  * Created by gillesbraun on 13/03/2017.
  */
-public class WaiterProductsFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class WaiterProductsFragment extends Fragment implements AdapterView.OnItemClickListener, LanguageObserver {
     private List<Product> products;
-    private String language = Config.getInstance().getLanguage().getCode();
+    private ProductsAdapter adapter;
 
     @Nullable
     @Override
@@ -41,7 +41,7 @@ public class WaiterProductsFragment extends Fragment implements AdapterView.OnIt
 
         ListView listView_products = (ListView) view.findViewById(R.id.listView_products);
 
-        ListAdapter adapter = new ProductsAdapter();
+        adapter = new ProductsAdapter();
 
         listView_products.setOnItemClickListener(this);
         listView_products.setAdapter(adapter);
@@ -86,11 +86,22 @@ public class WaiterProductsFragment extends Fragment implements AdapterView.OnIt
             TextView prodName = (TextView) convertView.findViewById(R.id.single_product_name);
             TextView prodPrice = (TextView) convertView.findViewById(R.id.single_product_price);
             StreamSupport.stream(product.getProductLocalized())
-                    .filter(pL -> pL.getLanguageCode().equals(language))
+                    .filter(pL -> pL.getLanguageCode().equals(Config.getInstance().getLanguage().getCode()))
                     .findFirst()
                     .ifPresent(t -> prodName.setText(t.getLabel()));
             prodPrice.setText(String.format(Locale.GERMANY, "%.2f €", product.getPrice().doubleValue()));
             return convertView;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity)getActivity()).setLanguageObserver(this);
+    }
+
+    @Override
+    public void languageChanged() {
+        adapter.notifyDataSetChanged();
     }
 }

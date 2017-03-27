@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     private FragNavController fragNavController;
     private FloatingActionButton fab_oderSubmit;
     private MenuItem menu_edit_order, menu_change_location;
+    private LanguageObserver languageObserver;
 
     public MainActivity() {
         ConnectionManager.init(this);
@@ -55,7 +56,6 @@ public class MainActivity extends AppCompatActivity
         fragments.add(new WaiterHomeFragment());
         fragments.add(new WaiterChooseFragment());
         fragments.add(new OrderLocationChooseFragment());
-        fragments.add(new LanguageChooseFragment());
     }
 
     @Override
@@ -170,7 +170,8 @@ public class MainActivity extends AppCompatActivity
                 fragNavController.pushFragment(new OrdersFragment());
             }
         } else if (id == R.id.nav_change_language) {
-            fragNavController.switchTab(FragNavController.TAB5);
+            LanguageChooseFragment.showLanguageSelectDialog(this);
+            //fragNavController.switchTab(FragNavController.TAB5);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -195,7 +196,7 @@ public class MainActivity extends AppCompatActivity
         new Handler(Looper.getMainLooper()).post(() -> {
             new MaterialDialog.Builder(this)
                     .title("Error")
-                    .content(e.getClass().getSimpleName() + ": " + e.getMessage())
+                    .content(e.getCause().getClass().getSimpleName() + ": " + e.getMessage())
                     .build()
                     .show();
         });
@@ -276,5 +277,15 @@ public class MainActivity extends AppCompatActivity
 
     public void setMenuEditLocationVisibility(boolean b) {
         menu_change_location.setVisible(b);
+    }
+
+    public void setLanguageObserver(LanguageObserver languageObserver) {
+        this.languageObserver = languageObserver;
+    }
+
+    public void languageChanged() {
+        if(languageObserver != null) {
+            languageObserver.languageChanged();
+        }
     }
 }

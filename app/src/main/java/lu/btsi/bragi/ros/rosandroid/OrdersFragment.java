@@ -90,6 +90,8 @@ public class OrdersFragment extends Fragment implements BroadcastCallback {
 
     private void updateOrientation() {
         RecyclerView.LayoutManager layoutManager;
+        if(getActivity() == null)
+            return;
         if (getActivity().getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             layoutManager = new GridLayoutManager(getContext(), 2);
         } else {

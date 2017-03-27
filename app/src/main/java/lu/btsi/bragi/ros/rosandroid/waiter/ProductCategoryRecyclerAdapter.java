@@ -26,7 +26,6 @@ class ProductCategoryRecyclerAdapter extends RecyclerView.Adapter<ProductCategor
     private List<Product> products;
     private String baseURL;
     private final MainActivity mainActivity;
-    private String langCode = Config.getInstance().getLanguage().getCode();
 
     ProductCategoryRecyclerAdapter(List<ProductCategory> categories, List<Product> products, String baseURL, MainActivity mainActivity) {
         this.categories = categories;
@@ -47,7 +46,7 @@ class ProductCategoryRecyclerAdapter extends RecyclerView.Adapter<ProductCategor
         String url = "http://"+baseURL + ":8888"+ category.getImageUrl();
         ImageLoader.getInstance().displayImage(url, holder.image);
         StreamSupport.stream(category.getProductCategoryLocalized())
-                .filter(pCL -> pCL.getLanguageCode().equals(langCode))
+                .filter(pCL -> pCL.getLanguageCode().equals(Config.getInstance().getLanguage().getCode()))
                 .findFirst()
                 .ifPresent(pcl -> holder.title.setText(pcl.getLabel()));
         holder.products = StreamSupport.stream(products)

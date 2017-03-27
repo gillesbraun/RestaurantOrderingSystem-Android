@@ -29,6 +29,7 @@ import lu.btsi.bragi.ros.models.message.MessageGet;
 import lu.btsi.bragi.ros.models.pojos.Product;
 import lu.btsi.bragi.ros.models.pojos.ProductCategory;
 import lu.btsi.bragi.ros.rosandroid.Config;
+import lu.btsi.bragi.ros.rosandroid.LanguageObserver;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.OrderManager;
 import lu.btsi.bragi.ros.rosandroid.R;
@@ -41,7 +42,7 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
  * Created by gillesbraun on 13/03/2017.
  */
 
-public class WaiterProductCategoriesFragment extends Fragment {
+public class WaiterProductCategoriesFragment extends Fragment implements LanguageObserver {
 
     private List<Product> products;
     private ArrayList<ProductCategory> categories;
@@ -133,5 +134,16 @@ public class WaiterProductCategoriesFragment extends Fragment {
             }
             recyclerView.setLayoutManager(layoutManager);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity)getActivity()).setLanguageObserver(this);
+    }
+
+    @Override
+    public void languageChanged() {
+        adapter.notifyDataSetChanged();
     }
 }
