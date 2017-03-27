@@ -157,6 +157,9 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             fragNavController.switchTab(FragNavController.TAB1);
         } else if (id == R.id.nav_waiter) {
+            if(!OrderManager.getInstance().hasOpenOrder()) {
+                fragNavController.clearStack();
+            }
             fragNavController.switchTab(FragNavController.TAB2);
             if(Config.getInstance().getWaiter() != null) {
                 fragNavController.pushFragment(new WaiterHomeFragment());
@@ -276,6 +279,7 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
+    // QR Code
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null && scanResult.getContents() != null) {

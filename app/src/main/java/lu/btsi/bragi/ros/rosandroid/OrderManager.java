@@ -81,7 +81,7 @@ public class OrderManager {
     }
 
     public Table getTable() {
-        return order.getTable();
+        return order == null ? null : order.getTable();
     }
 
     public Order getOrder() {

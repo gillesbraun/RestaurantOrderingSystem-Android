@@ -108,5 +108,8 @@ public class OrderLocationChooseFragment extends Fragment {
         super.onResume();
         OrderManager.getInstance().clear();
         ((MainActivity)getActivity()).updateFabVisibility();
+        if(locations == null || locations.size() == 0) {
+            loadData();
+        }
     }
 }

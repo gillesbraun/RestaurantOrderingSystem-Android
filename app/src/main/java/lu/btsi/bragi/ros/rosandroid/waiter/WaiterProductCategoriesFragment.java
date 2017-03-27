@@ -28,6 +28,7 @@ import lu.btsi.bragi.ros.models.message.MessageException;
 import lu.btsi.bragi.ros.models.message.MessageGet;
 import lu.btsi.bragi.ros.models.pojos.Product;
 import lu.btsi.bragi.ros.models.pojos.ProductCategory;
+import lu.btsi.bragi.ros.models.pojos.Table;
 import lu.btsi.bragi.ros.rosandroid.Config;
 import lu.btsi.bragi.ros.rosandroid.LanguageObserver;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
@@ -71,7 +72,9 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
         recyclerView.setAdapter(new ProductCategoryRecyclerAdapter(new ArrayList<>(), new ArrayList<>(), "", null));
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         ButterKnife.bind(this, view);
-        tableLabel.setText(String.format(Locale.GERMAN, tableString, OrderManager.getInstance().getTable().getId()));
+        Table table = OrderManager.getInstance().getTable();
+        if(table != null)
+            tableLabel.setText(String.format(Locale.GERMAN, tableString, table.getId()));
         return view;
     }
 
