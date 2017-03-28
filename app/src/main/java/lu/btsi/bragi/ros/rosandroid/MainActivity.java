@@ -142,9 +142,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if(id == R.id.menu_clear_cache) {
+        if(id == R.id.menu_clear_cache) {
             ImageLoader.getInstance().clearDiskCache();
             ImageLoader.getInstance().clearMemoryCache();
             return true;
