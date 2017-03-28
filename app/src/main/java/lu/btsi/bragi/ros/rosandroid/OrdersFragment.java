@@ -27,6 +27,7 @@ import lu.btsi.bragi.ros.models.message.MessageGetQuery;
 import lu.btsi.bragi.ros.models.message.Query;
 import lu.btsi.bragi.ros.models.message.QueryParam;
 import lu.btsi.bragi.ros.models.message.QueryType;
+import lu.btsi.bragi.ros.models.pojos.Location;
 import lu.btsi.bragi.ros.models.pojos.Order;
 import lu.btsi.bragi.ros.rosandroid.connection.BroadcastCallback;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
@@ -96,10 +97,11 @@ public class OrdersFragment extends Fragment implements BroadcastCallback {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Location location = Config.getInstance().getLocation();
         ((MainActivity)getActivity()).getSupportActionBar().setTitle(String.format(
                 Config.getInstance().getLocale(view.getContext()),
                 actionbarStr,
-                Config.getInstance().getLocation().getDescription()));
+                location != null ? location.getDescription() : ""));
         loadData();
     }
 
