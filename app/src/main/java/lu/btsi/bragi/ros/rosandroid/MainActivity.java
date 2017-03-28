@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ConnectionManager.getInstance().initPreferences(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -92,6 +91,7 @@ public class MainActivity extends AppCompatActivity
         drawerMenu = navigationView.getMenu();
 
         setMenuEnabled(false);
+        ConnectionManager.getInstance().initPreferences(this);
     }
 
     @Override
