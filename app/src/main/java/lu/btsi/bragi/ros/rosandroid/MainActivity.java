@@ -15,11 +15,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -47,13 +45,17 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton fab_oderSubmit;
     private MenuItem menu_edit_order, menu_change_location, menu_change_waiter;
     private LanguageObserver languageObserver;
+    private Menu drawerMenu;
 
     public MainActivity() {
         ConnectionManager.init(this);
 
-        fragments.add(new HomeFragment());
+        HomeFragment homeFragment = new HomeFragment();
+        fragments.add(homeFragment);
         fragments.add(new WaiterChooseFragment());
         fragments.add(new OrderLocationChooseFragment());
+
+        ConnectionManager.getInstance().addConnectionCallback(homeFragment);
     }
 
     @Override
@@ -87,6 +89,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        drawerMenu = navigationView.getMenu();
+
+        setMenuEnabled(false);
     }
 
     @Override
@@ -178,43 +183,36 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void setMenuEnabled(boolean b) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            drawerMenu.findItem(R.id.nav_waiter).setEnabled(b);
+            drawerMenu.findItem(R.id.nav_orders_view).setEnabled(b);
+            drawerMenu.findItem(R.id.nav_change_language).setEnabled(b);
+        });
+    }
+
     @Override
     public void connectionOpened() {
-        Log.d("ROS", "Connection established with: " + ConnectionManager.getInstance().getRemoteIPAdress());
+        setMenuEnabled(true);
     }
 
     @Override
     public void connectionClosed() {
         new Handler(Looper.getMainLooper()).post(() -> {
-            Toast.makeText(getApplicationContext(), "Conn closed", Toast.LENGTH_SHORT).show();
+            if(fragNavController != null) {
+                fragNavController.clearStack();
+                fragNavController.switchTab(FragNavController.TAB1);
+            }
         });
+        setMenuEnabled(false);
     }
 
     @Override
     public void connectionError(Exception e) {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            new MaterialDialog.Builder(this)
-                    .title("Error")
-                    .content(e.getCause().getClass().getSimpleName() + ": " + e.getMessage())
-                    .build()
-                    .show();
-        });
     }
 
     public void pushFragment(@Nullable Fragment fragment) {
         fragNavController.pushFragment(fragment);
-    }
-
-    public void popFragment() throws UnsupportedOperationException {
-        fragNavController.popFragment();
-    }
-
-    public void popFragments(int popDepth) throws UnsupportedOperationException {
-        fragNavController.popFragments(popDepth);
-    }
-
-    public void switchTab(int index) throws IndexOutOfBoundsException {
-        fragNavController.switchTab(index);
     }
 
     public void updateFabVisibility() {
@@ -246,11 +244,6 @@ public class MainActivity extends AppCompatActivity
     public void replaceFragment(@NonNull Fragment fragment) {
         fragNavController.replaceFragment(fragment);
     }
-
-    public void clearDialogFragment() {
-        fragNavController.clearDialogFragment();
-    }
-
 
     private MenuItem.OnMenuItemClickListener menuEditOrderPressed = new MenuItem.OnMenuItemClickListener() {
         @Override

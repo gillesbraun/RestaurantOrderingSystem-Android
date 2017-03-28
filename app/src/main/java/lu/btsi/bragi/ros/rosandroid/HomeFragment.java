@@ -2,6 +2,7 @@ package lu.btsi.bragi.ros.rosandroid;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
@@ -13,23 +14,32 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import lu.btsi.bragi.ros.rosandroid.connection.ConnectionCallback;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
+
+import static lu.btsi.bragi.ros.rosandroid.R.id.home_textView_connection_status;
+
 /**
  * Created by gillesbraun on 13/03/2017.
  */
 
-public class HomeFragment extends Fragment {
-    @BindView(R.id.home_textView_connection_status)
+public class HomeFragment extends Fragment implements ConnectionCallback {
+    @BindView(home_textView_connection_status)
     TextView textViewConnectionStatus;
 
     @BindString(R.string.home_isconnected)
     String strIsConnected;
+
+    @BindString(R.string.home_notconnected)
+    String strIsNotConnected;
 
     @BindString(R.string.home_dialog_hint)
     String strHint;
@@ -62,7 +72,6 @@ public class HomeFragment extends Fragment {
             String remoteIPAdress = manager.getRemoteIPAdress();
             textViewConnectionStatus.setText(String.format(Locale.GERMAN, strIsConnected, remoteIPAdress));
         } else {
-            textViewConnectionStatus.setText(R.string.home_notconnected);
         }
     }
 
@@ -104,5 +113,29 @@ public class HomeFragment extends Fragment {
         super.onResume();
         OrderManager.getInstance().clear();
         ((MainActivity)getActivity()).updateFabVisibility();
+    }
+
+    @Override
+    public void connectionOpened() {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            ConnectionManager manager = ConnectionManager.getInstance();
+            String remoteIPAdress = manager.getRemoteIPAdress();
+            textViewConnectionStatus.setText(String.format(Config.getInstance().getLocale(getContext()), strIsConnected, remoteIPAdress));
+        });
+    }
+
+    @Override
+    public void connectionClosed() {
+        new Handler(Looper.getMainLooper()).post(() -> {
+        });
+    }
+
+    @Override
+    public void connectionError(Exception e) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+            String error = e.getClass().getSimpleName() + (e.getMessage() != null ? ": " + e.getMessage() : "");
+            textViewConnectionStatus.setText(e + " " + String.format(Config.getInstance().getLocale(getContext()), strIsNotConnected, dateFormat.format(new Date())));
+        });
     }
 }

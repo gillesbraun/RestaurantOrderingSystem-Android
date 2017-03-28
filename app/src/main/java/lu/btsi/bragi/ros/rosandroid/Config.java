@@ -7,7 +7,6 @@ import java.util.Locale;
 
 import lu.btsi.bragi.ros.models.pojos.Language;
 import lu.btsi.bragi.ros.models.pojos.Location;
-import lu.btsi.bragi.ros.models.pojos.Table;
 import lu.btsi.bragi.ros.models.pojos.Waiter;
 
 /**
@@ -16,7 +15,6 @@ import lu.btsi.bragi.ros.models.pojos.Waiter;
 
 public class Config {
     private Language language = new Language("en", "English", null, null);
-    private Table table;
     private Waiter waiter;
 
     private static final Config ourInstance = new Config();

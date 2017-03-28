@@ -20,7 +20,7 @@
     <string name="language_choose_title">Choose a language</string>
     <string name="home_title">Welcome to Restaurant Ordering System for Android</string>
     <string name="home_isconnected">Is connected to: %s</string>
-    <string name="home_notconnected">Is not connected.</string>
+    <string name="home_notconnected">Is not connected. (Last try: %s)</string>
     <string name="home_language_changed_toast">Changed language to %s</string>
     <string name="home_dialog_hint">IP or Hostname</string>
     <string name="home_dialog_title">Enter the IP address or hostname of the server</string>

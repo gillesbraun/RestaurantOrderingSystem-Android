@@ -35,13 +35,14 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     private URI url;
     private Client client;
     private boolean isConnected = false;
-    private ConnectionCallback connectionCallback;
-    private Map<UUID, MessageCallback> callbackMap = new HashMap<>();
+    private final List<ConnectionCallback> connectionCallbackList = new ArrayList<>();
+    private final Map<UUID, MessageCallback> callbackMap = new HashMap<>();
     private final List<BroadcastCallback> broadcastCallbacks = new ArrayList<>();
     private final Set<Message> unsentMessages = new HashSet<>();
 
     private static ConnectionManager instance;
     private boolean queueRunning;
+    private boolean tryReconnect = false;
 
     public static ConnectionManager getInstance() {
         return instance;
@@ -57,7 +58,7 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     }
 
     private ConnectionManager(ConnectionCallback connectionCallback) {
-        this.connectionCallback = connectionCallback;
+        this.connectionCallbackList.add(connectionCallback);
     }
 
     public void sendWithAction(Message message, MessageCallback messageCallback) {
@@ -114,7 +115,9 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
             client.setMessageCallbackHandler(this);
             client.connect();
         } catch (Exception e) {
-            connectionCallback.connectionError(e);
+            for (ConnectionCallback connectionCallback : connectionCallbackList) {
+                connectionCallback.connectionError(e);
+            }
         }
     }
 
@@ -135,18 +138,33 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     @Override
     public void connectionOpened() {
         isConnected = true;
-        connectionCallback.connectionOpened();
+        tryReconnect = true;
+        for (ConnectionCallback connectionCallback : connectionCallbackList) {
+            connectionCallback.connectionOpened();
+        }
     }
 
     @Override
     public void connectionClosed() {
         isConnected = false;
-        connectionCallback.connectionClosed();
+        for (ConnectionCallback connectionCallback : connectionCallbackList) {
+            connectionCallback.connectionClosed();
+        }
+        if(tryReconnect) {
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    newClient();
+                }
+            }, 2000);
+        }
     }
 
     @Override
     public void connectionError(Exception e) {
-        connectionCallback.connectionError(e);
+        for (ConnectionCallback connectionCallback : connectionCallbackList) {
+            connectionCallback.connectionError(e);
+        }
     }
 
     @Override
@@ -176,14 +194,18 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     }
 
     public void setHost(String host) {
-        this.host = host;
         isConnected = false;
+        tryReconnect = false;
         if(host == null)
             return;
-        if(host.contains(":")) {
+        if (host.contains(":")) {
             url = URI.create("ws://" + host);
+            String[] split = host.split(":");
+            if (split.length > 0)
+                this.host = split[0];
         } else {
             url = URI.create("ws://" + host + ":8887");
+            this.host = host;
         }
         saveSettings();
         newClient();
@@ -195,5 +217,9 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
 
     public void addBroadcastCallback(BroadcastCallback broadcastCallback) {
         broadcastCallbacks.add(broadcastCallback);
+    }
+
+    public void addConnectionCallback(ConnectionCallback connectionCallback) {
+        this.connectionCallbackList.add(connectionCallback);
     }
 }
