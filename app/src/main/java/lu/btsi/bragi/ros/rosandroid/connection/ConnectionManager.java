@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import lu.btsi.bragi.ros.models.message.Message;
 import lu.btsi.bragi.ros.models.message.MessageType;
@@ -38,18 +39,16 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     private final List<ConnectionCallback> connectionCallbackList = new ArrayList<>();
     private final Map<UUID, MessageCallback> callbackMap = new HashMap<>();
     private final List<BroadcastCallback> broadcastCallbacks = new ArrayList<>();
-    private final Set<Message> unsentMessages = new HashSet<>();
+    private final LinkedBlockingQueue<Message<?>> unsentMessages = new LinkedBlockingQueue<>();
 
     private static ConnectionManager instance;
-    private boolean queueRunning;
     private boolean tryReconnect = false;
 
     public static ConnectionManager getInstance() {
+        if (instance == null) {
+            instance = new ConnectionManager();
+        }
         return instance;
-    }
-
-    public static void init(ConnectionCallback callback) {
-        instance = new ConnectionManager(callback);
     }
 
     public void initPreferences(MainActivity mainActivity) {
@@ -57,8 +56,8 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
         loadSettings();
     }
 
-    private ConnectionManager(ConnectionCallback connectionCallback) {
-        this.connectionCallbackList.add(connectionCallback);
+    private ConnectionManager() {
+        runQueue();
     }
 
     public void sendWithAction(Message message, MessageCallback messageCallback) {
@@ -71,39 +70,41 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
         return host;
     }
 
-    public void send(Message message) {
+    public void send(Message<?> message) {
         try {
-            if(client != null && message != null && isConnected)
-                client.send(message.toString());
-        } catch (WebsocketNotConnectedException e) {
+            Log.d("ConnectionManager", "SEND: " + message.toString());
+            client.send(message.toString());
+        } catch (Exception e) {
             queueMessageForLater(message);
         }
     }
 
-    private void queueMessageForLater(Message message) {
+    private void queueMessageForLater(Message<?> message) {
         unsentMessages.add(message);
-        startQueueTimer();
     }
 
-    private void startQueueTimer() {
-        if(!queueRunning) {
-            queueRunning = true;
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    List<Message> sendNext = new ArrayList<>();
-                    for(Iterator<Message> it = unsentMessages.iterator(); it.hasNext();) {
-                        Message message = it.next();
-                        sendNext.add(message);
-                        it.remove();
-                    }
-                    for (Message message : sendNext) {
-                        send(message);
-                    }
-                    queueRunning = false;
+    private void runQueue() {
+        Thread runner = new Thread(() -> {
+            while (true) {
+                if (Thread.currentThread().isInterrupted()) {
+                    return;
                 }
-            }, 1000);
-        }
+                ArrayList<Message<?>> sendNext = new ArrayList<>();
+                unsentMessages.drainTo(sendNext);
+                if (!sendNext.isEmpty()) {
+                    Log.d("ConnectionManager", "retrying to send messages");
+                }
+                for (Message message : sendNext) {
+                    send(message);
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "ConnectionManager queue retry thread");
+        runner.start();
     }
 
     private void newClient() {
@@ -169,6 +170,7 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
 
     @Override
     public void handleMessage(String text) {
+        Log.d("ConnectionManager", "RECV: " + text);
         boolean isError = Message.messageType(text).equals(MessageType.Error);
         UUID messageUUID = Message.messageUUID(text);
         MessageCallback messageCallback = callbackMap.get(messageUUID);
@@ -219,7 +221,15 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
         broadcastCallbacks.add(broadcastCallback);
     }
 
+    public void removeBroadcastCallback(BroadcastCallback broadcastCallback) {
+        broadcastCallbacks.remove(broadcastCallback);
+    }
+
     public void addConnectionCallback(ConnectionCallback connectionCallback) {
         this.connectionCallbackList.add(connectionCallback);
+    }
+
+    public void removeConnectionCallback(ConnectionCallback connectionCallback) {
+        this.connectionCallbackList.remove(connectionCallback);
     }
 }

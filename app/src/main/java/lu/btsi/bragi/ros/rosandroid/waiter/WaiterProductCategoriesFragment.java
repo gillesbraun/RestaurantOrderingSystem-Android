@@ -1,9 +1,7 @@
 package lu.btsi.bragi.ros.rosandroid.waiter;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -14,17 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import java8.util.Comparators;
 import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 import lu.btsi.bragi.ros.models.message.Message;
@@ -39,7 +30,6 @@ import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.OrderManager;
 import lu.btsi.bragi.ros.rosandroid.R;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
-import lu.btsi.bragi.ros.rosandroid.connection.MessageCallback;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
@@ -99,7 +89,7 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
         ConnectionManager.getInstance().sendWithAction(new MessageGet<>(Product.class), message -> {
             try {
                 List<Product> payload = new Message<Product>(message).getPayload();
-                adapter.addItems(StreamSupport.stream(payload).map(Product::getProductCategory).collect(Collectors.toList()));
+                adapter.setItems(StreamSupport.stream(payload).map(Product::getProductCategory).collect(Collectors.toList()));
             } catch (MessageException e) {
                 e.printStackTrace();
             }

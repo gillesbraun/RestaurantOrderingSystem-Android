@@ -57,8 +57,14 @@ public class OrdersFragment extends Fragment implements BroadcastCallback {
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        ConnectionManager.getInstance().removeBroadcastCallback(this);
+        super.onDestroy();
+    }
+
     private void loadData() {
-        Message messageQuery = new MessageGetQuery<>(
+        Message<Order> messageQuery = new MessageGetQuery<>(
                 Order.class,
                 new Query(QueryType.Open_Orders_For_Location,
                         new QueryParam("location", UInteger.class, Config.getInstance().getLocation().getId())));

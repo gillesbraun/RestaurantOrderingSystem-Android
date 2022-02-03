@@ -36,7 +36,8 @@ class ProductCategoryRecyclerAdapter extends RecyclerView.Adapter<ProductCategor
         this.listener = listener;
     }
 
-    public void addItems(List<ProductCategory> items) {
+    public void setItems(List<ProductCategory> items) {
+        categories.clear();
         categories.addAll(items);
         notifyDataSetChanged();
     }

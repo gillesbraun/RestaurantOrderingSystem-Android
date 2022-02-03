@@ -56,6 +56,7 @@ public class HomeFragment extends Fragment implements ConnectionCallback {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        ConnectionManager.getInstance().addConnectionCallback(this);
         handler = new Handler();
         runner.run();
     }
@@ -63,6 +64,7 @@ public class HomeFragment extends Fragment implements ConnectionCallback {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        ConnectionManager.getInstance().removeConnectionCallback(this);
         stopRunner();
     }
 
@@ -70,8 +72,7 @@ public class HomeFragment extends Fragment implements ConnectionCallback {
         ConnectionManager manager = ConnectionManager.getInstance();
         if(manager.isConnected()) {
             String remoteIPAdress = manager.getRemoteIPAdress();
-            textViewConnectionStatus.setText(String.format(Locale.GERMAN, strIsConnected, remoteIPAdress));
-        } else {
+            textViewConnectionStatus.setText(getString(R.string.home_isconnected, remoteIPAdress));
         }
     }
 

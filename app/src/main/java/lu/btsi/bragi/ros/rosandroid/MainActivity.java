@@ -48,14 +48,18 @@ public class MainActivity extends AppCompatActivity
     private Menu drawerMenu;
 
     public MainActivity() {
-        ConnectionManager.init(this);
+        ConnectionManager.getInstance().addConnectionCallback(this);
 
         HomeFragment homeFragment = new HomeFragment();
         fragments.add(homeFragment);
         fragments.add(new WaiterChooseFragment());
         fragments.add(new OrderLocationChooseFragment());
+    }
 
-        ConnectionManager.getInstance().addConnectionCallback(homeFragment);
+    @Override
+    protected void onDestroy() {
+        ConnectionManager.getInstance().removeConnectionCallback(this);
+        super.onDestroy();
     }
 
     @Override
