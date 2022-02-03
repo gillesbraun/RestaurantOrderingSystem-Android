@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="homeFragment" />
+    <item type="id" name="waiterChooseFragment" />
+    <item type="id" name="waiterProductCategoriesFragment" />
+    <item type="id" name="waiterHomeFragment" />
+    <item type="id" name="waiterProductsFragment" />
+    <item type="id" name="orderLocationChooseFragment" />
+    <item type="id" name="ordersFragment" />
+    <item type="id" name="singleProductDialog" />
+    <item type="id" name="languageChooseDialog" />
+    <item type="id" name="reviewOrderDialog" />
+</resources>

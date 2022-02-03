@@ -3,6 +3,8 @@ package lu.btsi.bragi.ros.rosandroid.waiter;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +56,9 @@ public class WaiterChooseFragment extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Config.getInstance().setWaiter(waiters.get(position));
-                            ((MainActivity) getActivity()).pushFragment(new WaiterHomeFragment());
+                            NavHostFragment.findNavController(WaiterChooseFragment.this).navigate(
+                                    WaiterChooseFragmentDirections.actionWaiterChooseFragmentToWaiterHomeFragment()
+                            );
                         }
                     });
                 } catch (MessageException e) {

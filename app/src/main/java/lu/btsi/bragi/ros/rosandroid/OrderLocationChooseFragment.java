@@ -5,6 +5,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,10 +41,6 @@ public class OrderLocationChooseFragment extends Fragment {
 
     private List<Location> locations;
 
-    public OrderLocationChooseFragment() {
-        loadData();
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,6 +55,7 @@ public class OrderLocationChooseFragment extends Fragment {
         if(locations == null) {
             loadData();
         }
+        loadData();
     }
 
     private void loadData() {
@@ -78,7 +78,9 @@ public class OrderLocationChooseFragment extends Fragment {
             Toast.makeText(getContext(), String.format(
                     Config.getInstance().getLocale(getContext()), strToastUpdated, location.getDescription())
                     , Toast.LENGTH_LONG).show();
-            ((MainActivity)getActivity()).replaceFragment(new OrdersFragment());
+            NavHostFragment.findNavController(this).navigate(
+                    OrderLocationChooseFragmentDirections.actionOrderLocationChooseFragmentToOrdersFragment()
+            );
         }
     }
 

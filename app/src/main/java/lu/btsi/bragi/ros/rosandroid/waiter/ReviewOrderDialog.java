@@ -54,7 +54,7 @@ public class ReviewOrderDialog extends DialogFragment {
         OrderManager.getInstance().sendToServer();
         dismiss();
         ((MainActivity)getActivity()).updateFabVisibility();
-        ((MainActivity)getActivity()).clearStack();
+        // pop up to
     }
 
     @OnClick(R.id.dialog_order_review_button_cancel)

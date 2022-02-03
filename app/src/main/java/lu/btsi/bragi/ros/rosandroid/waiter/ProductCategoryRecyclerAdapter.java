@@ -54,7 +54,7 @@ class ProductCategoryRecyclerAdapter extends RecyclerView.Adapter<ProductCategor
         String url = "http://" + baseURL + ":8888"+ category.getImageUrl();
         ImageLoader.getInstance().displayImage(url, holder.image);
         StreamSupport.stream(category.getProductCategoryLocalized())
-                .filter(pCL -> pCL.getLanguageCode().equals(Config.getInstance().getLanguage().getCode()))
+                //.filter(pCL -> pCL.getLanguageCode().equals(Config.getInstance().getLanguage().getCode()))
                 .findFirst()
                 .ifPresent(pcl -> holder.title.setText(pcl.getLabel()));
         holder.itemView.setOnClickListener(v -> listener.onProductCategoryClicked(category));

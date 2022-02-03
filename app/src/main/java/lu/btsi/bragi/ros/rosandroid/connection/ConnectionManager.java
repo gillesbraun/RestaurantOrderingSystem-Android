@@ -51,8 +51,8 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
         return instance;
     }
 
-    public void initPreferences(MainActivity mainActivity) {
-        instance.preferences = mainActivity.getSharedPreferences(mainActivity.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+    public void initPreferences(Context context) {
+        instance.preferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         loadSettings();
     }
 

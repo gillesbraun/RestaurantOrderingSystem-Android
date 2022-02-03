@@ -49,7 +49,7 @@ public class LanguageChooseDialog extends DialogFragment {
                 List<Language> languages = new Message<Language>(m).getPayload();
                 LanguageChooseDialog languageChooseDialog = new LanguageChooseDialog();
                 languageChooseDialog.setLanguages(languages);
-                mainActivity.showDialogFragment(languageChooseDialog);
+                // TODO mainActivity.showDialogFragment(languageChooseDialog);
             } catch (MessageException e) {
                 e.printStackTrace();
             }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -69,9 +70,9 @@ public class WaiterProductsFragment extends Fragment implements LanguageObserver
     }
 
     public void onProductClicked(Product product) {
-        SingleProductDialog productDialog = new SingleProductDialog();
-        productDialog.setProduct(product);
-        ((MainActivity)getActivity()).showDialogFragment(productDialog);
+        NavHostFragment.findNavController(this).navigate(
+                WaiterProductsFragmentDirections.actionWaiterProductsFragmentToSingleProductDialog(product)
+        );
     }
 
     static class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
@@ -129,7 +130,6 @@ public class WaiterProductsFragment extends Fragment implements LanguageObserver
     public void onResume() {
         super.onResume();
         ((MainActivity)getActivity()).setLanguageObserver(this);
-        ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(true);
     }
 
     @Override
@@ -137,10 +137,4 @@ public class WaiterProductsFragment extends Fragment implements LanguageObserver
         adapter.notifyDataSetChanged();
     }
 
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(false);
-    }
 }

@@ -3,6 +3,9 @@ package lu.btsi.bragi.ros.rosandroid.waiter;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,12 +68,12 @@ public class SingleProductDialog extends DialogFragment {
 
     private int currentQuantity = 1;
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        SingleProductDialogArgs args = SingleProductDialogArgs.fromBundle(getArguments());
+        product = args.getProduct();
+
         Dialog showProductSingle = new Dialog(getContext());
         View view = View.inflate(getContext(), R.layout.content_product, null);
         showProductSingle.setContentView(view);
@@ -78,7 +81,7 @@ public class SingleProductDialog extends DialogFragment {
 
 
         Optional<ProductLocalized> productTranslation = StreamSupport.stream(product.getProductLocalized())
-                .filter(pL -> pL.getLanguageCode().equals(language))
+                //.filter(pL -> pL.getLanguageCode().equals(language))
                 .findFirst();
 
         List<AllergenLocalized> allergens = StreamSupport.stream(product.getProductAllergen())

@@ -3,6 +3,9 @@ package lu.btsi.bragi.ros.rosandroid.waiter;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavHostController;
+import androidx.navigation.fragment.NavHostFragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,10 +43,6 @@ public class WaiterHomeFragment extends Fragment {
 
     private List<Table> tables;
 
-    public WaiterHomeFragment() {
-        loadData();
-    }
-
     private void loadData() {
         ConnectionManager.getInstance().sendWithAction(new MessageGet<>(Table.class), m -> {
             try {
@@ -57,6 +56,7 @@ public class WaiterHomeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.actionbar_waiter_home);
+        loadData();
     }
 
     @Nullable
@@ -80,24 +80,14 @@ public class WaiterHomeFragment extends Fragment {
                     if(position < 0 || position >= tables.size())
                         return false;
                     OrderManager.getInstance().createNew().setTable(tables.get(position));
-                    ((MainActivity)getActivity()).pushFragment(new WaiterProductCategoriesFragment());
+                    NavHostFragment.findNavController(this).navigate(
+                            WaiterHomeFragmentDirections.actionWaiterHomeFragmentToWaiterProductCategoriesFragment()
+                    );
                     return true;
                 })
                 .negativeText("Cancel")
                 .positiveText("Choose")
                 .build()
                 .show();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(false);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(true);
     }
 }

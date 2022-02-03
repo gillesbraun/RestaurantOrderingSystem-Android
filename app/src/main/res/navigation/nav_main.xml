@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@id/homeFragment"
+        android:name="lu.btsi.bragi.ros.rosandroid.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_waiterChooseFragment"
+            app:destination="@id/waiterChooseFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_orderLocationChooseFragment"
+            app:destination="@id/orderLocationChooseFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_languageChooseDialog"
+            app:destination="@id/languageChooseDialog" />
+    </fragment>
+
+    <fragment
+        android:id="@id/waiterChooseFragment"
+        android:name="lu.btsi.bragi.ros.rosandroid.waiter.WaiterChooseFragment"
+        android:label="@string/actionbar_waiter_choose"
+        tools:layout="@layout/fragment_waiter_choose" >
+        <action
+            android:id="@+id/action_waiterChooseFragment_to_waiterHomeFragment"
+            app:destination="@id/waiterHomeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@id/waiterProductCategoriesFragment"
+        android:name="lu.btsi.bragi.ros.rosandroid.waiter.WaiterProductCategoriesFragment"
+        android:label="@string/actionbar_productcategories_select"
+        tools:layout="@layout/fragment_waiter_productcategories" >
+        <action
+            android:id="@+id/action_waiterProductCategoriesFragment_to_waiterProductsFragment"
+            app:destination="@id/waiterProductsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@id/waiterHomeFragment"
+        android:name="lu.btsi.bragi.ros.rosandroid.waiter.WaiterHomeFragment"
+        android:label="@string/actionbar_waiter_home"
+        tools:layout="@layout/fragment_waiter_home" >
+        <action
+            android:id="@+id/action_waiterHomeFragment_to_waiterProductCategoriesFragment"
+            app:destination="@id/waiterProductCategoriesFragment" />
+    </fragment>
+
+    <fragment
+        android:name="lu.btsi.bragi.ros.rosandroid.waiter.WaiterProductsFragment"
+        android:label="@string/actionbar_product_select"
+        tools:layout="@layout/fragment_products"
+        android:id="@id/waiterProductsFragment" >
+        <action
+            android:id="@+id/action_waiterProductsFragment_to_singleProductDialog"
+            app:destination="@id/singleProductDialog" />
+    </fragment>
+
+    <fragment
+        android:name="lu.btsi.bragi.ros.rosandroid.OrderLocationChooseFragment"
+        tools:layout="@layout/fragment_orders_choose_location"
+        android:label="@string/actionbar_location_choose"
+        android:id="@id/orderLocationChooseFragment" >
+        <action
+            android:id="@+id/action_orderLocationChooseFragment_to_ordersFragment"
+            app:destination="@id/ordersFragment" />
+    </fragment>
+
+    <fragment
+        android:name="lu.btsi.bragi.ros.rosandroid.OrdersFragment"
+        tools:layout="@layout/fragment_orders"
+        tools:label="@string/actionbar_orders"
+        android:id="@id/ordersFragment" />
+
+    <dialog
+        android:id="@id/singleProductDialog"
+        tools:layout="@layout/content_product"
+        android:name="lu.btsi.bragi.ros.rosandroid.waiter.SingleProductDialog" >
+        <argument
+            android:name="product"
+            app:argType="lu.btsi.bragi.ros.models.pojos.Product" />
+    </dialog>
+
+    <dialog
+        android:id="@id/languageChooseDialog"
+        android:name="lu.btsi.bragi.ros.rosandroid.LanguageChooseDialog" />
+    <dialog
+        android:id="@id/reviewOrderDialog"
+        android:name="lu.btsi.bragi.ros.rosandroid.waiter.ReviewOrderDialog"
+        tools:layout="@layout/dialog_order_review"
+        android:label="ReviewOrderDialog" />
+
+
+</navigation>

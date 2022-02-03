@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,8 +58,7 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.actionbar_productcategories_select);
-        recyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
+        recyclerView = view.findViewById(R.id.main_recycler_view);
 
         adapter = new ProductCategoryRecyclerAdapter(this::onCategoryClicked);
         recyclerView.setAdapter(adapter);
@@ -82,14 +82,16 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
         Bundle bundle = new Bundle();
         bundle.putInt(WaiterProductsFragment.EXTRA_PRODUCT_CATEGORY_ID, category.getId().intValue());
         waiterProductsFragment.setArguments(bundle);
-        ((MainActivity)requireActivity()).pushFragment(waiterProductsFragment);
+        NavHostFragment.findNavController(this).navigate(
+                WaiterProductCategoriesFragmentDirections.actionWaiterProductCategoriesFragmentToWaiterProductsFragment()
+        );
     }
 
     private void loadData() {
         ConnectionManager.getInstance().sendWithAction(new MessageGet<>(Product.class), message -> {
             try {
                 List<Product> payload = new Message<Product>(message).getPayload();
-                adapter.setItems(StreamSupport.stream(payload).map(Product::getProductCategory).collect(Collectors.toList()));
+                adapter.setItems(StreamSupport.stream(payload).map(Product::getProductCategory).distinct().collect(Collectors.toList()));
             } catch (MessageException e) {
                 e.printStackTrace();
             }
@@ -101,7 +103,6 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
         super.onResume();
         ((MainActivity)getActivity()).updateFabVisibility();
         ((MainActivity)getActivity()).setLanguageObserver(this);
-        ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(true);
         waiterName.setText(getString(R.string.productcategories_textView_waiterName, Config.getInstance().getWaiter().getName()));
     }
 
@@ -110,9 +111,4 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
         adapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        ((MainActivity)getActivity()).setMenuChangeWaiterVisibility(false);
-    }
 }
