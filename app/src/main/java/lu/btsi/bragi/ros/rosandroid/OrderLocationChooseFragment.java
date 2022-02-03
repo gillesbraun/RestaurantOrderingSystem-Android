@@ -2,9 +2,9 @@ package lu.btsi.bragi.ros.rosandroid;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +94,7 @@ public class OrderLocationChooseFragment extends Fragment {
             if(convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.single_location, parent, false);
             }
-            TextView locationLabel = ButterKnife.findById(convertView, R.id.single_location_label);
+            TextView locationLabel = convertView.findViewById(R.id.single_location_label);
 
             Location location = getItem(position);
             locationLabel.setText(location.getDescription());

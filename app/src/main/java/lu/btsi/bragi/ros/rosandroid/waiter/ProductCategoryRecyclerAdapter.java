@@ -1,6 +1,6 @@
 package lu.btsi.bragi.ros.rosandroid.waiter;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java8.util.stream.StreamSupport;
@@ -17,21 +18,27 @@ import lu.btsi.bragi.ros.models.pojos.ProductCategory;
 import lu.btsi.bragi.ros.rosandroid.Config;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.R;
+import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 
 import static java8.util.stream.Collectors.toList;
 
 class ProductCategoryRecyclerAdapter extends RecyclerView.Adapter<ProductCategoryRecyclerAdapter.ViewHolder> {
 
-    private List<ProductCategory> categories;
-    private List<Product> products;
-    private String baseURL;
-    private final MainActivity mainActivity;
+    public interface ProductCategoryClickedListener {
+        void onProductCategoryClicked(ProductCategory category);
+    }
 
-    ProductCategoryRecyclerAdapter(List<ProductCategory> categories, List<Product> products, String baseURL, MainActivity mainActivity) {
-        this.categories = categories;
-        this.products = products;
-        this.baseURL = baseURL;
-        this.mainActivity = mainActivity;
+    private final ArrayList<ProductCategory> categories = new ArrayList<>();
+    private final ProductCategoryClickedListener listener;
+    private final String baseURL = ConnectionManager.getInstance().getRemoteIPAdress();
+
+    ProductCategoryRecyclerAdapter(ProductCategoryClickedListener listener) {
+        this.listener = listener;
+    }
+
+    public void addItems(List<ProductCategory> items) {
+        categories.addAll(items);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -43,15 +50,13 @@ class ProductCategoryRecyclerAdapter extends RecyclerView.Adapter<ProductCategor
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ProductCategory category = categories.get(position);
-        String url = "http://"+baseURL + ":8888"+ category.getImageUrl();
+        String url = "http://" + baseURL + ":8888"+ category.getImageUrl();
         ImageLoader.getInstance().displayImage(url, holder.image);
         StreamSupport.stream(category.getProductCategoryLocalized())
                 .filter(pCL -> pCL.getLanguageCode().equals(Config.getInstance().getLanguage().getCode()))
                 .findFirst()
                 .ifPresent(pcl -> holder.title.setText(pcl.getLabel()));
-        holder.products = StreamSupport.stream(products)
-                .filter(p -> p.getProductCategory().equals(category))
-                .collect(toList());
+        holder.itemView.setOnClickListener(v -> listener.onProductCategoryClicked(category));
     }
 
     @Override
@@ -59,26 +64,14 @@ class ProductCategoryRecyclerAdapter extends RecyclerView.Adapter<ProductCategor
         return categories.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         ImageView image;
-        List<Product> products;
 
         ViewHolder(View itemView) {
             super(itemView);
-
             image = (ImageView)itemView.findViewById(R.id.card_image);
             title = (TextView)itemView.findViewById(R.id.card_title);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = ViewHolder.this.getAdapterPosition();
-                    WaiterProductsFragment waiterProductsFragment = new WaiterProductsFragment();
-                    waiterProductsFragment.setProducts(products);
-                    mainActivity.pushFragment(waiterProductsFragment);
-                }
-            });
         }
     }
 }
