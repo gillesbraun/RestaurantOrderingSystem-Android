@@ -1,25 +1,24 @@
-package lu.btsi.bragi.ros.rosandroid;
+package lu.btsi.bragi.ros.rosandroid
 
-import android.app.Application;
+import android.app.Application
+import com.nostra13.universalimageloader.core.DisplayImageOptions
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
+import com.nostra13.universalimageloader.core.ImageLoader
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+class RosApplication : Application() {
 
-public class RosApplication extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    override fun onCreate() {
+        super.onCreate()
 
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .build();
+        val options = DisplayImageOptions.Builder()
+            .cacheInMemory(true)
+            .cacheOnDisk(true)
+            .build()
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-                .defaultDisplayImageOptions(options)
-                .build();
+        val config = ImageLoaderConfiguration.Builder(this)
+            .defaultDisplayImageOptions(options)
+            .build()
 
-        ImageLoader.getInstance().init(config);
+        ImageLoader.getInstance().init(config)
     }
 }

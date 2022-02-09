@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'androidx.navigation.safeargs'
 }
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 31
@@ -61,4 +62,9 @@ dependencies {
     implementation group: 'com.google.zxing', name: 'core', version: '3.3.0'
     implementation group: 'com.google.zxing', name: 'android-integration', version: '3.3.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
