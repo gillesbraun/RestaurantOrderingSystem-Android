@@ -1,70 +1,60 @@
-package lu.btsi.bragi.ros.rosandroid.waiter;
+package lu.btsi.bragi.ros.rosandroid.ui.waiter.choose
 
-import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-
-import java.util.List;
-
-import lu.btsi.bragi.ros.models.message.Message;
-import lu.btsi.bragi.ros.models.message.MessageException;
-import lu.btsi.bragi.ros.models.message.MessageGet;
-import lu.btsi.bragi.ros.models.pojos.Waiter;
-import lu.btsi.bragi.ros.rosandroid.Config;
-import lu.btsi.bragi.ros.rosandroid.MainActivity;
-import lu.btsi.bragi.ros.rosandroid.R;
-import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
-import lu.btsi.bragi.ros.rosandroid.connection.MessageCallback;
+import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView.OnItemClickListener
+import android.widget.ArrayAdapter
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.NavHostFragment
+import by.kirich1409.viewbindingdelegate.viewBinding
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import lu.btsi.bragi.ros.models.pojos.Waiter
+import lu.btsi.bragi.ros.rosandroid.Config
+import lu.btsi.bragi.ros.rosandroid.R
+import lu.btsi.bragi.ros.rosandroid.WaiterManager
+import lu.btsi.bragi.ros.rosandroid.databinding.FragmentWaiterChooseBinding
+import javax.inject.Inject
 
 /**
  * Created by gillesbraun on 13/03/2017.
  */
+@AndroidEntryPoint
+class WaiterChooseFragment : Fragment(R.layout.fragment_waiter_choose) {
 
-public class WaiterChooseFragment extends Fragment {
+    @Inject
+    lateinit var waiterManager: WaiterManager
 
-    public WaiterChooseFragment() {
-    }
+    private val binding by viewBinding(FragmentWaiterChooseBinding::bind)
+    private lateinit var adapter: ArrayAdapter<Waiter>
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_waiter_choose, container, false);
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        adapter = ArrayAdapter<Waiter>(
+            view.context,
+            R.layout.single_waiter,
+            R.id.single_waiter_label,
+            arrayListOf()
+        )
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.actionbar_waiter_choose);
-
-        ConnectionManager.getInstance().sendWithAction(new MessageGet<>(Waiter.class), new MessageCallback() {
-            @Override
-            public void handleAnswer(String message) {
-                try {
-                    List<Waiter> waiters = new Message<Waiter>(message).getPayload();
-                    ListView listViewWaiters = (ListView) view.findViewById(R.id.waiter_choose_listView);
-                    ListAdapter adapter = new ArrayAdapter<>(view.getContext(), R.layout.single_waiter, R.id.single_waiter_label, waiters);
-                    listViewWaiters.setAdapter(adapter);
-                    listViewWaiters.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Config.getInstance().setWaiter(waiters.get(position));
-                            NavHostFragment.findNavController(WaiterChooseFragment.this).navigate(
-                                    WaiterChooseFragmentDirections.actionWaiterChooseFragmentToWaiterHomeFragment()
-                            );
-                        }
-                    });
-                } catch (MessageException e) {
-                    e.printStackTrace();
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                waiterManager.allWaiters.collect { waiters ->
+                    adapter.clear()
+                    adapter.addAll(waiters)
+                    adapter.notifyDataSetChanged()
                 }
             }
-        });
+        }
+
+        binding.listView.adapter = adapter
+        binding.listView.onItemClickListener = OnItemClickListener { _, _, position, _ ->
+            Config.getInstance().waiter = adapter.getItem(position)
+            NavHostFragment.findNavController(this).navigate(
+                WaiterChooseFragmentDirections.actionWaiterChooseFragmentToWaiterHomeFragment()
+            )
+        }
     }
 }

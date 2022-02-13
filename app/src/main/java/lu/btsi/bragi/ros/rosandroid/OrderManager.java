@@ -3,11 +3,15 @@ package lu.btsi.bragi.ros.rosandroid;
 import org.jooq.types.UInteger;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import java8.util.stream.StreamSupport;
+import kotlinx.coroutines.flow.MutableStateFlow;
+import kotlinx.coroutines.flow.StateFlowKt;
 import lu.btsi.bragi.ros.models.message.Message;
 import lu.btsi.bragi.ros.models.message.MessageType;
 import lu.btsi.bragi.ros.models.pojos.Order;
@@ -24,6 +28,7 @@ import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 public class OrderManager {
     private final ConnectionManager connectionManager;
     private Order order;
+    private final MutableStateFlow<List<ProductPriceForOrder>> _products = StateFlowKt.MutableStateFlow(Collections.emptyList());
 
     @Inject
     OrderManager(ConnectionManager connectionManager) {

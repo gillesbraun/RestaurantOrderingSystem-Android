@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@id/waiterChooseFragment"
-        android:name="lu.btsi.bragi.ros.rosandroid.waiter.WaiterChooseFragment"
+        android:name="lu.btsi.bragi.ros.rosandroid.ui.waiter.choose.WaiterChooseFragment"
         android:label="@string/actionbar_waiter_choose"
         tools:layout="@layout/fragment_waiter_choose" >
         <action
