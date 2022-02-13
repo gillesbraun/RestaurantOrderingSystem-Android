@@ -23,10 +23,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.hilt.android.AndroidEntryPoint;
 import java8.util.stream.StreamSupport;
-import lu.btsi.bragi.ros.models.pojos.Order;
 import lu.btsi.bragi.ros.models.pojos.ProductPriceForOrder;
 import lu.btsi.bragi.ros.rosandroid.Config;
-import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.R;
 import lu.btsi.bragi.ros.rosandroid.managers.OrderManager;
 
@@ -48,9 +46,7 @@ public class ReviewOrderDialog extends DialogFragment {
         dialog.setContentView(view);
         ButterKnife.bind(this, view);
 
-        Order order = orderManager.getOrder();
-
-        listViewProducts.setAdapter(new ReviewOrderAdapter(getContext(), order.getProductPriceForOrder()));
+        listViewProducts.setAdapter(new ReviewOrderAdapter(getContext(), orderManager.getProducts().getValue()));
 
         return dialog;
     }
@@ -59,7 +55,6 @@ public class ReviewOrderDialog extends DialogFragment {
     void buttonSendToServerPressed() {
         orderManager.sendToServer();
         dismiss();
-        ((MainActivity)getActivity()).updateFabVisibility();
         // pop up to
     }
 

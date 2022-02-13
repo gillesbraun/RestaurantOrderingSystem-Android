@@ -115,7 +115,6 @@ public class OrdersFragment extends Fragment implements BroadcastCallback {
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity)getActivity()).updateFabVisibility();
     }
 
     @Override

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -21,11 +22,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.hilt.android.AndroidEntryPoint;
 import java8.util.stream.StreamSupport;
-import lu.btsi.bragi.ros.models.pojos.Order;
 import lu.btsi.bragi.ros.models.pojos.Product;
 import lu.btsi.bragi.ros.models.pojos.ProductPriceForOrder;
 import lu.btsi.bragi.ros.rosandroid.Config;
-import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.R;
 import lu.btsi.bragi.ros.rosandroid.managers.OrderManager;
 
@@ -39,18 +38,18 @@ public class OrderEditDialog extends DialogFragment {
     ListView productListView;
 
     @Inject OrderManager orderManager;
-    private Order order;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        order = orderManager.getOrder();
         Dialog dialog = new Dialog(getContext());
         View view = View.inflate(getContext(), R.layout.dialog_order_edit, null);
         dialog.setContentView(view);
         ButterKnife.bind(this, view);
 
-        productListView.setAdapter(new OrderEditAdapter());
+        OrderEditAdapter orderEditAdapter = new OrderEditAdapter();
+        orderEditAdapter.products.addAll(orderManager.getProducts().getValue());
+        productListView.setAdapter(orderEditAdapter);
 
         return dialog;
     }
@@ -81,17 +80,17 @@ public class OrderEditDialog extends DialogFragment {
 
         @BindView(R.id.single_order_button_decrease)
         Button buttonDecrease;
-
-        private ProductPriceForOrder productPriceForOrder;
+        
+        ArrayList<ProductPriceForOrder> products = new ArrayList<>();
 
         @Override
         public int getCount() {
-            return order.getProductPriceForOrder().size();
+            return products.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return order.getProductPriceForOrder().get(position);
+            return products.get(position);
         }
 
         @Override
@@ -107,7 +106,7 @@ public class OrderEditDialog extends DialogFragment {
             ButterKnife.bind(this, convertView);
 
 
-            productPriceForOrder = order.getProductPriceForOrder().get(position);
+            ProductPriceForOrder productPriceForOrder = products.get(position);
             double price = productPriceForOrder.getPricePerProduct().doubleValue() * productPriceForOrder.getQuantity().longValue();
             String priceStr = String.format(Locale.GERMANY, "%.2f €", price);
             String unitPriceStr = String.format(Config.getInstance().getLocale(getContext()), "%.2f €", productPriceForOrder.getPricePerProduct().doubleValue());
@@ -132,8 +131,7 @@ public class OrderEditDialog extends DialogFragment {
         @Override
         public void notifyDataSetChanged() {
             super.notifyDataSetChanged();
-            ((MainActivity)getActivity()).updateFabVisibility();
-            if(orderManager.hasOpenOrder() && ! orderManager.orderHasProducts()) {
+            if(orderManager.getProducts().getValue().isEmpty()) {
                 dismiss();
             }
         }

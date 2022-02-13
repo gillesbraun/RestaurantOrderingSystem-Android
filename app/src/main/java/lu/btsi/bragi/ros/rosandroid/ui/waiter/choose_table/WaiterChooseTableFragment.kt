@@ -49,8 +49,7 @@ class WaiterChooseTableFragment : Fragment(R.layout.fragment_waiter_home) {
             .title("Select a Table")
             .items(tables)
             .itemsCallbackSingleChoice(-1) { _, _, position, _ ->
-                orderManager.createNew()
-                orderManager.table = tables[position]
+                orderManager.setTable(tables[position])
                 NavHostFragment.findNavController(this).navigate(
                     WaiterChooseTableFragmentDirections.actionWaiterHomeFragmentToWaiterProductCategoriesFragment()
                 )

@@ -1,130 +1,109 @@
-package lu.btsi.bragi.ros.rosandroid;
+package lu.btsi.bragi.ros.rosandroid
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import javax.inject.Inject;
-
-import dagger.hilt.android.AndroidEntryPoint;
-import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
-import lu.btsi.bragi.ros.rosandroid.databinding.ActivityMainBinding;
-import lu.btsi.bragi.ros.rosandroid.managers.OrderManager;
-import lu.btsi.bragi.ros.rosandroid.waiter.ReviewOrderDialog;
+import android.content.Intent
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.zxing.integration.android.IntentIntegrator
+import com.nostra13.universalimageloader.core.ImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager
+import lu.btsi.bragi.ros.rosandroid.databinding.ActivityMainBinding
+import lu.btsi.bragi.ros.rosandroid.managers.OrderManager
+import lu.btsi.bragi.ros.rosandroid.waiter.ReviewOrderDialog
+import javax.inject.Inject
 
 @AndroidEntryPoint
-public class MainActivity extends AppCompatActivity {
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
-    private NavController navController;
-    private LanguageObserver languageObserver;
-    private ActivityMainBinding binding;
+    @Deprecated("") private var languageObserver: LanguageObserver? = null
 
-    @Inject ConnectionManager connectionManager;
-    @Inject
-    OrderManager orderManager;
+    @Inject lateinit var connectionManager: ConnectionManager
+    @Inject lateinit var orderManager: OrderManager
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        setSupportActionBar(binding.toolbar);
+    private lateinit var navController: NavController
+    private val binding by viewBinding(ActivityMainBinding::bind)
 
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        navController = navHostFragment.getNavController();
-
-        AppBarConfiguration configuration = new AppBarConfiguration.Builder(R.id.homeFragment)
-                .setOpenableLayout(drawerLayout)
-                .build();
-        NavigationUI.setupWithNavController(binding.navView, navController);
-        NavigationUI.setupWithNavController(binding.toolbar, navController, configuration);
-        NavigationUI.setupActionBarWithNavController(this, navController, configuration);
-
-        binding.fabOrderSubmit.setVisibility(View.GONE);
-        binding.fabOrderSubmit.setOnClickListener(fabSendOrderPressed);
-
-        connectionManager.initPreferences(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        binding = null;
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        return navController.navigateUp() || super.onSupportNavigateUp();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if(id == R.id.menu_clear_cache) {
-            ImageLoader.getInstance().clearDiskCache();
-            ImageLoader.getInstance().clearMemoryCache();
-            return true;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setSupportActionBar(binding.toolbar)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+        val configuration = AppBarConfiguration.Builder(R.id.homeFragment)
+            .setOpenableLayout(binding.drawerLayout)
+            .build()
+        NavigationUI.setupWithNavController(binding.navView, navController)
+        NavigationUI.setupWithNavController(binding.toolbar, navController, configuration)
+        NavigationUI.setupActionBarWithNavController(this, navController, configuration)
+        connectionManager.initPreferences(this)
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                orderManager.products.onEach {
+                    binding.fabOrderSubmit.isVisible = it.isNotEmpty()
+                }.launchIn(this)
+            }
         }
-
-        return super.onOptionsItemSelected(item);
+        binding.fabOrderSubmit.visibility = View.GONE
+        binding.fabOrderSubmit.setOnClickListener(fabSendOrderPressed)
     }
 
-    @Deprecated
-    public void updateFabVisibility() {
-        if(orderManager.hasOpenOrder() && orderManager.orderHasProducts()) {
-            binding.fabOrderSubmit.setVisibility(View.VISIBLE);
-        } else {
-            binding.fabOrderSubmit.setVisibility(View.GONE);
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.menu_clear_cache) {
+            ImageLoader.getInstance().clearDiskCache()
+            ImageLoader.getInstance().clearMemoryCache()
+            return true
         }
-        //menu_edit_order.setVisible(manager.hasOpenOrder() && manager.orderHasProducts());
+        return super.onOptionsItemSelected(item)
     }
 
-    private View.OnClickListener fabSendOrderPressed = view -> {
-        ReviewOrderDialog reviewOrderDialog = new ReviewOrderDialog();
-        reviewOrderDialog.setCancelable(false);
-        navController.navigate(R.id.reviewOrderDialog);
-    };
+    private val fabSendOrderPressed = View.OnClickListener { view: View? ->
+        val reviewOrderDialog = ReviewOrderDialog()
+        reviewOrderDialog.isCancelable = false
+        navController.navigate(R.id.reviewOrderDialog)
+    }
 
     // QR Code
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null && scanResult.getContents() != null) {
-            ConnectionManager.getInstance().connect(scanResult.getContents());
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent)
+        if (scanResult != null && scanResult.contents != null) {
+            ConnectionManager.getInstance().connect(scanResult.contents)
         }
     }
 
-    @Deprecated
-    public void setLanguageObserver(LanguageObserver languageObserver) {
-        this.languageObserver = languageObserver;
+    @Deprecated("")
+    fun setLanguageObserver(languageObserver: LanguageObserver?) {
+        this.languageObserver = languageObserver
     }
 
-    public void languageChanged() {
-        if(languageObserver != null) {
-            languageObserver.languageChanged();
+    fun languageChanged() {
+        if (languageObserver != null) {
+            languageObserver!!.languageChanged()
         }
     }
 }

@@ -15,7 +15,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import lu.btsi.bragi.ros.rosandroid.MainActivity
 import lu.btsi.bragi.ros.rosandroid.R
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionState
 import lu.btsi.bragi.ros.rosandroid.databinding.FragmentHomeBinding
@@ -83,8 +82,4 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         integrator.initiateScan()
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as MainActivity?)!!.updateFabVisibility()
-    }
 }

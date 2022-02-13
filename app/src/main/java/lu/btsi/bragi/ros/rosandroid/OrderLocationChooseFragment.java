@@ -106,7 +106,6 @@ public class OrderLocationChooseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity)getActivity()).updateFabVisibility();
         loadData();
     }
 }

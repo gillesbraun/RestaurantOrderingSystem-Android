@@ -32,7 +32,6 @@ import lu.btsi.bragi.ros.models.pojos.Product;
 import lu.btsi.bragi.ros.models.pojos.ProductAllergen;
 import lu.btsi.bragi.ros.models.pojos.ProductLocalized;
 import lu.btsi.bragi.ros.rosandroid.Config;
-import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.R;
 import lu.btsi.bragi.ros.rosandroid.managers.OrderManager;
 
@@ -109,9 +108,8 @@ public class SingleProductDialog extends DialogFragment {
 
     @OnClick(R.id.content_product_button_addToOrder)
     public void buttonAddToOrderPressed() {
-        orderManager.addProductToOrder(product, currentQuantity);
+        orderManager.addProduct(product, currentQuantity);
         dismiss();
-        ((MainActivity)getActivity()).updateFabVisibility();
     }
 
     @OnClick(R.id.content_product_button_increaseItemCount)

@@ -69,7 +69,7 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         ButterKnife.bind(this, view);
-        Table table = orderManager.getTable();
+        Table table = orderManager.getTable().getValue();
         if(table != null) {
             tableLabel.setText(getString(R.string.productcategories_textView_table, table.getId()));
         }
@@ -106,7 +106,6 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity)getActivity()).updateFabVisibility();
         ((MainActivity)getActivity()).setLanguageObserver(this);
         waiterName.setText(getString(R.string.productcategories_textView_waiterName, waiterManager.getWaiter().getValue().getName()));
     }
