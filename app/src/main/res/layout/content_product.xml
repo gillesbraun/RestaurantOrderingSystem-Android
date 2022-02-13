@@ -81,8 +81,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/content_product_button_increaseItemCount"
             android:layout_toStartOf="@+id/content_product_button_increaseItemCount"
+            android:layout_toLeftOf="@+id/content_product_button_increaseItemCount"
             android:enabled="false"
             android:text="-" />
 
@@ -92,18 +92,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/content_product_button_addToOrder"
             android:layout_toStartOf="@+id/content_product_button_addToOrder"
+            android:layout_toLeftOf="@+id/content_product_button_addToOrder"
             android:text="+" />
 
         <Button
             android:id="@+id/content_product_button_addToOrder"
-            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
             android:text="@string/product_single_button_addToOrder" />
 
     </RelativeLayout>

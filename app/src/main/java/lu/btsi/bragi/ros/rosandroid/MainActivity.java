@@ -30,16 +30,15 @@ import lu.btsi.bragi.ros.rosandroid.waiter.ReviewOrderDialog;
 public class MainActivity extends AppCompatActivity {
 
     private NavController navController;
-    private FloatingActionButton fab_oderSubmit;
     private LanguageObserver languageObserver;
     private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
@@ -49,9 +48,8 @@ public class MainActivity extends AppCompatActivity {
         AppBarConfiguration configuration = new AppBarConfiguration.Builder(R.id.homeFragment)
                 .setOpenableLayout(drawerLayout)
                 .build();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        NavigationUI.setupWithNavController(navigationView, navController);
-        NavigationUI.setupWithNavController(toolbar, navController, configuration);
+        NavigationUI.setupWithNavController(binding.navView, navController);
+        NavigationUI.setupWithNavController(binding.toolbar, navController, configuration);
         NavigationUI.setupActionBarWithNavController(this, navController, configuration);
 
 
@@ -60,9 +58,8 @@ public class MainActivity extends AppCompatActivity {
         //drawer.addDrawerListener(toggle);
         //toggle.syncState();
 
-        fab_oderSubmit = (FloatingActionButton)findViewById(R.id.fab_order_submit);
-        fab_oderSubmit.setVisibility(View.GONE);
-        fab_oderSubmit.setOnClickListener(fabSendOrderPressed);
+        binding.fabOrderSubmit.setVisibility(View.GONE);
+        binding.fabOrderSubmit.setOnClickListener(fabSendOrderPressed);
 
         ConnectionManager.getInstance().initPreferences(this);
     }
@@ -115,9 +112,9 @@ public class MainActivity extends AppCompatActivity {
     public void updateFabVisibility() {
         OrderManager manager = OrderManager.getInstance();
         if(manager.hasOpenOrder() && manager.orderHasProducts()) {
-            fab_oderSubmit.setVisibility(View.VISIBLE);
+            binding.fabOrderSubmit.setVisibility(View.VISIBLE);
         } else {
-            fab_oderSubmit.setVisibility(View.GONE);
+            binding.fabOrderSubmit.setVisibility(View.GONE);
         }
         //menu_edit_order.setVisible(manager.hasOpenOrder() && manager.orderHasProducts());
     }

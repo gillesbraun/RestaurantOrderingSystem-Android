@@ -21,13 +21,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:gravity="right"
+        android:gravity="end"
         android:layout_height="wrap_content">
         <Button
             android:id="@+id/dialog_order_buttonClose"
             android:text="@string/dialog_order_doneEditing"
             android:layout_marginTop="10dp"
-            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
