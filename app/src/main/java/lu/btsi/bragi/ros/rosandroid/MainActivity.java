@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
 
     @Inject ConnectionManager connectionManager;
+    @Inject OrderManager orderManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Deprecated
     public void updateFabVisibility() {
-        OrderManager manager = OrderManager.getInstance();
-        if(manager.hasOpenOrder() && manager.orderHasProducts()) {
+        if(orderManager.hasOpenOrder() && orderManager.orderHasProducts()) {
             binding.fabOrderSubmit.setVisibility(View.VISIBLE);
         } else {
             binding.fabOrderSubmit.setVisibility(View.GONE);

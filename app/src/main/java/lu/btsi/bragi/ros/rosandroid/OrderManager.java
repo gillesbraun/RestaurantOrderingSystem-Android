@@ -4,6 +4,9 @@ import org.jooq.types.UInteger;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import java8.util.stream.StreamSupport;
 import lu.btsi.bragi.ros.models.message.Message;
 import lu.btsi.bragi.ros.models.message.MessageType;
@@ -17,43 +20,42 @@ import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
  * Created by Gilles Braun on 14.03.2017.
  */
 
+@Singleton
 public class OrderManager {
-    private static final OrderManager ourInstance = new OrderManager();
+    private final ConnectionManager connectionManager;
     private Order order;
 
-    public static OrderManager getInstance() {
-        return ourInstance;
+    @Inject
+    OrderManager(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
     }
-
-    private OrderManager() {}
 
     public void sendToServer() {
         order.setWaiter(Config.getInstance().getWaiter());
         Message<Order> orderMessage = new Message<>(MessageType.Create, order, Order.class);
-        ConnectionManager.getInstance().send(orderMessage);
+        connectionManager.send(orderMessage);
         order = null;
     }
 
-    public OrderManager addProductToOrder(Product product, UInteger quantity) {
+    public void addProductToOrder(Product product, long quantity) {
         if(isProductInOrder(product)) {
             StreamSupport.stream(order.getProductPriceForOrder())
                     .filter(ppfo -> ppfo.getProductId().equals(product.getId()))
                     .findFirst().ifPresent(ppfo -> {
-                ppfo.setQuantity(UInteger.valueOf(ppfo.getQuantity().longValue() + quantity.longValue()));
+                ppfo.setQuantity(UInteger.valueOf(ppfo.getQuantity().longValue() + quantity));
             });
         } else {
             ProductPriceForOrder productPriceForOrder = new ProductPriceForOrder();
             productPriceForOrder.setProductId(product.getId());
             productPriceForOrder.setProduct(product);
             productPriceForOrder.setPricePerProduct(product.getPrice());
-            productPriceForOrder.setQuantity(quantity);
+            productPriceForOrder.setQuantity(UInteger.valueOf(quantity));
 
             if(order.getProductPriceForOrder() == null) {
                 order.setProductPriceForOrder(new ArrayList<>());
             }
             order.getProductPriceForOrder().add(productPriceForOrder);
         }
-        return ourInstance;
     }
 
     private boolean isProductInOrder(Product product) {
@@ -69,15 +71,13 @@ public class OrderManager {
         return order != null && order.getProductPriceForOrder() != null && order.getProductPriceForOrder().size() > 0;
     }
 
-    public OrderManager createNew() {
+    public void createNew() {
         order = new Order();
-        return ourInstance;
     }
 
-    public OrderManager setTable(Table table) {
+    public void setTable(Table table) {
         order.setTable(table);
         order.setTableId(table.getId());
-        return ourInstance;
     }
 
     public Table getTable() {

@@ -3,10 +3,6 @@ package lu.btsi.bragi.ros.rosandroid.waiter;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +12,18 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.jooq.types.UInteger;
+import androidx.fragment.app.DialogFragment;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.hilt.android.AndroidEntryPoint;
 import java8.util.Optional;
 import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
@@ -40,8 +39,11 @@ import lu.btsi.bragi.ros.rosandroid.R;
 /**
  * Created by Gilles Braun on 14.03.2017.
  */
-
+@AndroidEntryPoint
 public class SingleProductDialog extends DialogFragment {
+
+    @Inject OrderManager orderManager;
+    
     private Product product;
     private String language = Config.getInstance().getLanguage().getCode();
 
@@ -107,7 +109,7 @@ public class SingleProductDialog extends DialogFragment {
 
     @OnClick(R.id.content_product_button_addToOrder)
     public void buttonAddToOrderPressed() {
-        OrderManager.getInstance().addProductToOrder(product, UInteger.valueOf(currentQuantity));
+        orderManager.addProductToOrder(product, currentQuantity);
         dismiss();
         ((MainActivity)getActivity()).updateFabVisibility();
     }

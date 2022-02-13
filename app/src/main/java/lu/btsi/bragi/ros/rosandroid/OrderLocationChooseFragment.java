@@ -2,12 +2,6 @@ package lu.btsi.bragi.ros.rosandroid;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +9,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import java.util.List;
 
@@ -31,7 +30,6 @@ import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 /**
  * Created by gillesbraun on 13/03/2017.
  */
-
 public class OrderLocationChooseFragment extends Fragment {
     @BindView(R.id.order_location_listView)
     ListView listViewLocations;
@@ -108,7 +106,6 @@ public class OrderLocationChooseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        OrderManager.getInstance().clear();
         ((MainActivity)getActivity()).updateFabVisibility();
         loadData();
     }

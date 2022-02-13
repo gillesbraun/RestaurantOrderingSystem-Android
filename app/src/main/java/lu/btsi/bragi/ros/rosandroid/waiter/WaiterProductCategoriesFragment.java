@@ -1,6 +1,12 @@
 package lu.btsi.bragi.ros.rosandroid.waiter;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -8,15 +14,14 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.hilt.android.AndroidEntryPoint;
 import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 import lu.btsi.bragi.ros.models.message.Message;
@@ -32,13 +37,12 @@ import lu.btsi.bragi.ros.rosandroid.OrderManager;
 import lu.btsi.bragi.ros.rosandroid.R;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 
-import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
-
 /**
  * Created by gillesbraun on 13/03/2017.
  */
-
+@AndroidEntryPoint
 public class WaiterProductCategoriesFragment extends Fragment implements LanguageObserver {
+    @Inject OrderManager orderManager;
 
     private RecyclerView recyclerView;
     private GridLayoutManager layoutManager;
@@ -64,7 +68,7 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         ButterKnife.bind(this, view);
-        Table table = OrderManager.getInstance().getTable();
+        Table table = orderManager.getTable();
         if(table != null) {
             tableLabel.setText(getString(R.string.productcategories_textView_table, table.getId()));
         }

@@ -3,9 +3,6 @@ package lu.btsi.bragi.ros.rosandroid.waiter;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +10,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.hilt.android.AndroidEntryPoint;
 import java8.util.stream.StreamSupport;
 import lu.btsi.bragi.ros.models.pojos.Order;
 import lu.btsi.bragi.ros.models.pojos.ProductPriceForOrder;
@@ -29,10 +33,12 @@ import lu.btsi.bragi.ros.rosandroid.R;
 /**
  * Created by gillesbraun on 17/03/2017.
  */
-
+@AndroidEntryPoint
 public class ReviewOrderDialog extends DialogFragment {
     @BindView(R.id.dialog_order_review_listView)
     ListView listViewProducts;
+
+    @Inject OrderManager orderManager;
 
     @NonNull
     @Override
@@ -42,7 +48,7 @@ public class ReviewOrderDialog extends DialogFragment {
         dialog.setContentView(view);
         ButterKnife.bind(this, view);
 
-        Order order = OrderManager.getInstance().getOrder();
+        Order order = orderManager.getOrder();
 
         listViewProducts.setAdapter(new ReviewOrderAdapter(getContext(), order.getProductPriceForOrder()));
 
@@ -51,7 +57,7 @@ public class ReviewOrderDialog extends DialogFragment {
 
     @OnClick(R.id.dialog_order_review_button_ok)
     void buttonSendToServerPressed() {
-        OrderManager.getInstance().sendToServer();
+        orderManager.sendToServer();
         dismiss();
         ((MainActivity)getActivity()).updateFabVisibility();
         // pop up to

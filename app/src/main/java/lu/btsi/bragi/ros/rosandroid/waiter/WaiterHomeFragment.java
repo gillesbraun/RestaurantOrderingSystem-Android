@@ -1,25 +1,27 @@
 package lu.btsi.bragi.ros.rosandroid.waiter;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavHostController;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.hilt.android.AndroidEntryPoint;
 import lu.btsi.bragi.ros.models.message.Message;
 import lu.btsi.bragi.ros.models.message.MessageException;
 import lu.btsi.bragi.ros.models.message.MessageGet;
@@ -33,8 +35,10 @@ import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 /**
  * Created by Gilles Braun on 14.03.2017.
  */
-
+@AndroidEntryPoint
 public class WaiterHomeFragment extends Fragment {
+    @Inject OrderManager orderManager;
+
     @BindView(R.id.waiterhome_textView_waiterName)
     TextView waiterName;
 
@@ -79,7 +83,8 @@ public class WaiterHomeFragment extends Fragment {
                 .itemsCallbackSingleChoice(-1, (dialog, itemView, position, text) -> {
                     if(position < 0 || position >= tables.size())
                         return false;
-                    OrderManager.getInstance().createNew().setTable(tables.get(position));
+                    orderManager.createNew();
+                    orderManager.setTable(tables.get(position));
                     NavHostFragment.findNavController(this).navigate(
                             WaiterHomeFragmentDirections.actionWaiterHomeFragmentToWaiterProductCategoriesFragment()
                     );

@@ -1,17 +1,20 @@
 package lu.btsi.bragi.ros.rosandroid;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import org.jooq.types.UInteger;
 
@@ -31,8 +34,6 @@ import lu.btsi.bragi.ros.models.pojos.Location;
 import lu.btsi.bragi.ros.models.pojos.Order;
 import lu.btsi.bragi.ros.rosandroid.connection.BroadcastCallback;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
-
-import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 /**
  * Created by gillesbraun on 17/03/2017.
@@ -114,7 +115,6 @@ public class OrdersFragment extends Fragment implements BroadcastCallback {
     @Override
     public void onResume() {
         super.onResume();
-        OrderManager.getInstance().clear();
         ((MainActivity)getActivity()).updateFabVisibility();
     }
 

@@ -2,8 +2,6 @@ package lu.btsi.bragi.ros.rosandroid.waiter;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,11 +9,17 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.hilt.android.AndroidEntryPoint;
 import java8.util.stream.StreamSupport;
 import lu.btsi.bragi.ros.models.pojos.Order;
 import lu.btsi.bragi.ros.models.pojos.Product;
@@ -29,16 +33,18 @@ import lu.btsi.bragi.ros.rosandroid.R;
  * Created by gillesbraun on 15/03/2017.
  */
 
+@AndroidEntryPoint
 public class OrderEditDialog extends DialogFragment {
     @BindView(R.id.dialog_order_listView)
     ListView productListView;
 
+    @Inject OrderManager orderManager;
     private Order order;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        order = OrderManager.getInstance().getOrder();
+        order = orderManager.getOrder();
         Dialog dialog = new Dialog(getContext());
         View view = View.inflate(getContext(), R.layout.dialog_order_edit, null);
         dialog.setContentView(view);
@@ -127,26 +133,26 @@ public class OrderEditDialog extends DialogFragment {
         public void notifyDataSetChanged() {
             super.notifyDataSetChanged();
             ((MainActivity)getActivity()).updateFabVisibility();
-            if(OrderManager.getInstance().hasOpenOrder() && ! OrderManager.getInstance().orderHasProducts()) {
+            if(orderManager.hasOpenOrder() && ! orderManager.orderHasProducts()) {
                 dismiss();
             }
         }
 
         @OnClick(R.id.single_order_button_remove)
         void removeClicked(View view) {
-            OrderManager.getInstance().removeProductFromOrder((Product) view.getTag());
+            orderManager.removeProductFromOrder((Product) view.getTag());
             notifyDataSetChanged();
         }
 
         @OnClick(R.id.single_order_button_increase)
         void increaseQuantityClicked(View view) {
-            OrderManager.getInstance().changeQuantity((Product) view.getTag(), 1);
+            orderManager.changeQuantity((Product) view.getTag(), 1);
             notifyDataSetChanged();
         }
 
         @OnClick(R.id.single_order_button_decrease)
         void decreaseQuantityClicked(View view) {
-            OrderManager.getInstance().changeQuantity((Product) view.getTag(), -1);
+            orderManager.changeQuantity((Product) view.getTag(), -1);
             notifyDataSetChanged();
         }
     }
