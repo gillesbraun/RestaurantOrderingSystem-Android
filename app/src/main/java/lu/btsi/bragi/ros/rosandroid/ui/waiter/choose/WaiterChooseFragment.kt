@@ -14,8 +14,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import lu.btsi.bragi.ros.models.pojos.Waiter
 import lu.btsi.bragi.ros.rosandroid.R
-import lu.btsi.bragi.ros.rosandroid.WaiterManager
 import lu.btsi.bragi.ros.rosandroid.databinding.FragmentWaiterChooseBinding
+import lu.btsi.bragi.ros.rosandroid.managers.WaiterManager
 import javax.inject.Inject
 
 /**

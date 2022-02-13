@@ -1,4 +1,4 @@
-package lu.btsi.bragi.ros.rosandroid;
+package lu.btsi.bragi.ros.rosandroid.managers;
 
 import org.jooq.types.UInteger;
 

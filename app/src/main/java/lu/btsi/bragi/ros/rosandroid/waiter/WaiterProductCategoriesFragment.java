@@ -32,10 +32,10 @@ import lu.btsi.bragi.ros.models.pojos.ProductCategory;
 import lu.btsi.bragi.ros.models.pojos.Table;
 import lu.btsi.bragi.ros.rosandroid.LanguageObserver;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
-import lu.btsi.bragi.ros.rosandroid.OrderManager;
 import lu.btsi.bragi.ros.rosandroid.R;
-import lu.btsi.bragi.ros.rosandroid.WaiterManager;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
+import lu.btsi.bragi.ros.rosandroid.managers.OrderManager;
+import lu.btsi.bragi.ros.rosandroid.managers.WaiterManager;
 
 /**
  * Created by gillesbraun on 13/03/2017.

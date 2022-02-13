@@ -33,8 +33,8 @@ import lu.btsi.bragi.ros.models.pojos.ProductAllergen;
 import lu.btsi.bragi.ros.models.pojos.ProductLocalized;
 import lu.btsi.bragi.ros.rosandroid.Config;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
-import lu.btsi.bragi.ros.rosandroid.OrderManager;
 import lu.btsi.bragi.ros.rosandroid.R;
+import lu.btsi.bragi.ros.rosandroid.managers.OrderManager;
 
 /**
  * Created by Gilles Braun on 14.03.2017.

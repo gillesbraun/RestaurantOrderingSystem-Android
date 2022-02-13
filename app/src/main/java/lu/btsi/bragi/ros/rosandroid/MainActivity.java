@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 import lu.btsi.bragi.ros.rosandroid.databinding.ActivityMainBinding;
+import lu.btsi.bragi.ros.rosandroid.managers.OrderManager;
 import lu.btsi.bragi.ros.rosandroid.waiter.ReviewOrderDialog;
 
 @AndroidEntryPoint
@@ -32,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
 
     @Inject ConnectionManager connectionManager;
-    @Inject OrderManager orderManager;
+    @Inject
+    OrderManager orderManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

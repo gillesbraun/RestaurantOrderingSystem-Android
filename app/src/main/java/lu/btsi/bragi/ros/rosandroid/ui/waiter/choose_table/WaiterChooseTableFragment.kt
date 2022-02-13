@@ -13,11 +13,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import lu.btsi.bragi.ros.rosandroid.OrderManager
 import lu.btsi.bragi.ros.rosandroid.R
-import lu.btsi.bragi.ros.rosandroid.TableManager
-import lu.btsi.bragi.ros.rosandroid.WaiterManager
 import lu.btsi.bragi.ros.rosandroid.databinding.FragmentWaiterHomeBinding
+import lu.btsi.bragi.ros.rosandroid.managers.OrderManager
+import lu.btsi.bragi.ros.rosandroid.managers.TableManager
+import lu.btsi.bragi.ros.rosandroid.managers.WaiterManager
 import javax.inject.Inject
 
 /**

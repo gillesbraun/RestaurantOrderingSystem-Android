@@ -26,8 +26,8 @@ import lu.btsi.bragi.ros.models.pojos.Product;
 import lu.btsi.bragi.ros.models.pojos.ProductPriceForOrder;
 import lu.btsi.bragi.ros.rosandroid.Config;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
-import lu.btsi.bragi.ros.rosandroid.OrderManager;
 import lu.btsi.bragi.ros.rosandroid.R;
+import lu.btsi.bragi.ros.rosandroid.managers.OrderManager;
 
 /**
  * Created by gillesbraun on 15/03/2017.
