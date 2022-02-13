@@ -23,10 +23,16 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import javax.inject.Inject;
+
+import dagger.hilt.EntryPoint;
+import dagger.hilt.android.AndroidEntryPoint;
+import dagger.hilt.android.HiltAndroidApp;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 import lu.btsi.bragi.ros.rosandroid.databinding.ActivityMainBinding;
 import lu.btsi.bragi.ros.rosandroid.waiter.ReviewOrderDialog;
 
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
     private NavController navController;

@@ -21,6 +21,9 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import lu.btsi.bragi.ros.models.message.Message;
 import lu.btsi.bragi.ros.models.message.MessageType;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
@@ -30,6 +33,7 @@ import lu.btsi.bragi.ros.rosandroid.R;
  * Created by gillesbraun on 13/03/2017.
  */
 
+@Singleton
 public class ConnectionManager implements ConnectionCallback, MessageCallbackHandler {
     private SharedPreferences preferences;
     private String host;
@@ -56,7 +60,7 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
         loadSettings();
     }
 
-    private ConnectionManager() {
+    @Inject ConnectionManager() {
         runQueue();
     }
 
@@ -110,6 +114,10 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     private void newClient() {
         if(host == null || url == null)
             return;
+        if (client != null) {
+            client.setConnectionCallback(null);
+            client.setMessageCallbackHandler(null);
+        }
         try {
             client = new Client(url);
             client.setConnectionCallback(this);

@@ -4,7 +4,9 @@ import android.app.Application
 import com.nostra13.universalimageloader.core.DisplayImageOptions
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import com.nostra13.universalimageloader.core.ImageLoader
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class RosApplication : Application() {
 
     override fun onCreate() {

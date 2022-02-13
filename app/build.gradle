@@ -1,8 +1,11 @@
 plugins {
     id 'com.android.application'
     id 'androidx.navigation.safeargs'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
 }
-apply plugin: 'kotlin-android'
+//apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 31
@@ -31,12 +34,23 @@ android {
     }
 }
 
+kapt {
+    // hilt requires this
+    correctErrorTypes true
+}
+
 dependencies {
     //androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
     //    exclude group: 'com.android.support', module: 'support-annotations'
     //})
+
+    def hilt_version = "2.40.5"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    annotationProcessor "com.google.dagger:hilt-compiler:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
     implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.5.0'
     //testImplementation 'junit:junit:4.12'
     implementation 'com.google.code.gson:gson:2.8.0'
     implementation group: 'org.jooq', name: 'jooq', version: '3.2.0'
@@ -44,10 +58,15 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
 
     def nav_version = "2.3.5"
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+    runtimeOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'
 
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     implementation 'net.sourceforge.streamsupport:streamsupport:1.5.3'
@@ -62,7 +81,8 @@ dependencies {
     implementation group: 'com.google.zxing', name: 'core', version: '3.3.0'
     implementation group: 'com.google.zxing', name: 'android-integration', version: '3.3.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
-    implementation "androidx.core:core-ktx:+"
+    kapt 'com.jakewharton:butterknife-compiler:10.2.3'
+    implementation "androidx.core:core-ktx:1.7.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
