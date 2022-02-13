@@ -32,7 +32,7 @@ class WaiterManager @Inject constructor(
         }
     }
 
-    fun loadWaiters() {
+    private fun loadWaiters() {
         connectionManager.sendWithAction(MessageGet(Waiter::class.java)) { response ->
             _allWaiters.update { Message<Waiter>(response).payload }
         }

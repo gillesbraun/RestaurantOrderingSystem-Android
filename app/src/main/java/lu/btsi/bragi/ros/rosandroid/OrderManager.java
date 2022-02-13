@@ -27,16 +27,18 @@ import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 @Singleton
 public class OrderManager {
     private final ConnectionManager connectionManager;
+    private final WaiterManager waiterManager;
     private Order order;
     private final MutableStateFlow<List<ProductPriceForOrder>> _products = StateFlowKt.MutableStateFlow(Collections.emptyList());
 
     @Inject
-    OrderManager(ConnectionManager connectionManager) {
+    OrderManager(ConnectionManager connectionManager, WaiterManager waiterManager) {
         this.connectionManager = connectionManager;
+        this.waiterManager = waiterManager;
     }
 
     public void sendToServer() {
-        order.setWaiter(Config.getInstance().getWaiter());
+        order.setWaiter(waiterManager.getWaiter().getValue());
         Message<Order> orderMessage = new Message<>(MessageType.Create, order, Order.class);
         connectionManager.send(orderMessage);
         order = null;

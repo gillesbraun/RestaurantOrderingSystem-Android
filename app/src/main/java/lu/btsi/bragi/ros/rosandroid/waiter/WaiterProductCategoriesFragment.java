@@ -30,11 +30,11 @@ import lu.btsi.bragi.ros.models.message.MessageGet;
 import lu.btsi.bragi.ros.models.pojos.Product;
 import lu.btsi.bragi.ros.models.pojos.ProductCategory;
 import lu.btsi.bragi.ros.models.pojos.Table;
-import lu.btsi.bragi.ros.rosandroid.Config;
 import lu.btsi.bragi.ros.rosandroid.LanguageObserver;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.OrderManager;
 import lu.btsi.bragi.ros.rosandroid.R;
+import lu.btsi.bragi.ros.rosandroid.WaiterManager;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 
 /**
@@ -43,6 +43,7 @@ import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 @AndroidEntryPoint
 public class WaiterProductCategoriesFragment extends Fragment implements LanguageObserver {
     @Inject OrderManager orderManager;
+    @Inject WaiterManager waiterManager;
 
     private RecyclerView recyclerView;
     private GridLayoutManager layoutManager;
@@ -107,7 +108,7 @@ public class WaiterProductCategoriesFragment extends Fragment implements Languag
         super.onResume();
         ((MainActivity)getActivity()).updateFabVisibility();
         ((MainActivity)getActivity()).setLanguageObserver(this);
-        waiterName.setText(getString(R.string.productcategories_textView_waiterName, Config.getInstance().getWaiter().getName()));
+        waiterName.setText(getString(R.string.productcategories_textView_waiterName, waiterManager.getWaiter().getValue().getName()));
     }
 
     @Override

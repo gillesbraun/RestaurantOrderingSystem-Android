@@ -13,7 +13,6 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import lu.btsi.bragi.ros.models.pojos.Waiter
-import lu.btsi.bragi.ros.rosandroid.Config
 import lu.btsi.bragi.ros.rosandroid.R
 import lu.btsi.bragi.ros.rosandroid.WaiterManager
 import lu.btsi.bragi.ros.rosandroid.databinding.FragmentWaiterChooseBinding
@@ -51,7 +50,7 @@ class WaiterChooseFragment : Fragment(R.layout.fragment_waiter_choose) {
 
         binding.listView.adapter = adapter
         binding.listView.onItemClickListener = OnItemClickListener { _, _, position, _ ->
-            Config.getInstance().waiter = adapter.getItem(position)
+            waiterManager.setWaiter(adapter.getItem(position)!!)
             NavHostFragment.findNavController(this).navigate(
                 WaiterChooseFragmentDirections.actionWaiterChooseFragmentToWaiterHomeFragment()
             )

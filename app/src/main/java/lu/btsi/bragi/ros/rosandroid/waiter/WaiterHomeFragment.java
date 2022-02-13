@@ -26,10 +26,10 @@ import lu.btsi.bragi.ros.models.message.Message;
 import lu.btsi.bragi.ros.models.message.MessageException;
 import lu.btsi.bragi.ros.models.message.MessageGet;
 import lu.btsi.bragi.ros.models.pojos.Table;
-import lu.btsi.bragi.ros.rosandroid.Config;
 import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.OrderManager;
 import lu.btsi.bragi.ros.rosandroid.R;
+import lu.btsi.bragi.ros.rosandroid.WaiterManager;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 
 /**
@@ -38,6 +38,7 @@ import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 @AndroidEntryPoint
 public class WaiterHomeFragment extends Fragment {
     @Inject OrderManager orderManager;
+    @Inject WaiterManager waiterManager;
 
     @BindView(R.id.waiterhome_textView_waiterName)
     TextView waiterName;
@@ -68,7 +69,7 @@ public class WaiterHomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_waiter_home, container, false);
         ButterKnife.bind(this, view);
-        waiterName.setText(String.format(Locale.GERMAN, waiterString, Config.getInstance().getWaiter().getName()));
+        waiterName.setText(String.format(Locale.GERMAN, waiterString, waiterManager.getWaiter().getValue().getName()));
         if(tables == null) {
             loadData();
         }

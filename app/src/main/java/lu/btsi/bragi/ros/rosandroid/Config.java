@@ -7,7 +7,6 @@ import java.util.Locale;
 
 import lu.btsi.bragi.ros.models.pojos.Language;
 import lu.btsi.bragi.ros.models.pojos.Location;
-import lu.btsi.bragi.ros.models.pojos.Waiter;
 
 /**
  * Created by Gilles Braun on 14.03.2017.
@@ -15,7 +14,6 @@ import lu.btsi.bragi.ros.models.pojos.Waiter;
 
 public class Config {
     private Language language = new Language("en", "English", null, null);
-    private Waiter waiter;
 
     private static final Config ourInstance = new Config();
     private Location location;
@@ -31,16 +29,8 @@ public class Config {
         return language;
     }
 
-    public Waiter getWaiter() {
-        return waiter;
-    }
-
     public void setLanguage(Language language) {
         this.language = language;
-    }
-
-    public void setWaiter(Waiter waiter) {
-        this.waiter = waiter;
     }
 
     public Locale getLocale(Context context) {
