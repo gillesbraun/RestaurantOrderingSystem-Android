@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@id/waiterHomeFragment"
-        android:name="lu.btsi.bragi.ros.rosandroid.waiter.WaiterHomeFragment"
+        android:name="lu.btsi.bragi.ros.rosandroid.ui.waiter.choose_table.WaiterChooseTableFragment"
         android:label="@string/actionbar_waiter_home"
         tools:layout="@layout/fragment_waiter_home" >
         <action

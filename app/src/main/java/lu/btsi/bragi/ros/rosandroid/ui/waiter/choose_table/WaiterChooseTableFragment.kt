@@ -1,99 +1,64 @@
-package lu.btsi.bragi.ros.rosandroid.waiter;
+package lu.btsi.bragi.ros.rosandroid.ui.waiter.choose_table
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-
-import java.util.List;
-import java.util.Locale;
-
-import javax.inject.Inject;
-
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import dagger.hilt.android.AndroidEntryPoint;
-import lu.btsi.bragi.ros.models.message.Message;
-import lu.btsi.bragi.ros.models.message.MessageException;
-import lu.btsi.bragi.ros.models.message.MessageGet;
-import lu.btsi.bragi.ros.models.pojos.Table;
-import lu.btsi.bragi.ros.rosandroid.MainActivity;
-import lu.btsi.bragi.ros.rosandroid.OrderManager;
-import lu.btsi.bragi.ros.rosandroid.R;
-import lu.btsi.bragi.ros.rosandroid.WaiterManager;
-import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
+import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.NavHostFragment
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.afollestad.materialdialogs.MaterialDialog
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import lu.btsi.bragi.ros.rosandroid.OrderManager
+import lu.btsi.bragi.ros.rosandroid.R
+import lu.btsi.bragi.ros.rosandroid.TableManager
+import lu.btsi.bragi.ros.rosandroid.WaiterManager
+import lu.btsi.bragi.ros.rosandroid.databinding.FragmentWaiterHomeBinding
+import javax.inject.Inject
 
 /**
  * Created by Gilles Braun on 14.03.2017.
  */
 @AndroidEntryPoint
-public class WaiterHomeFragment extends Fragment {
-    @Inject OrderManager orderManager;
-    @Inject WaiterManager waiterManager;
+class WaiterChooseTableFragment : Fragment(R.layout.fragment_waiter_home) {
 
-    @BindView(R.id.waiterhome_textView_waiterName)
-    TextView waiterName;
+    @Inject lateinit var tableManager: TableManager
+    @Inject lateinit var waiterManager: WaiterManager
+    @Inject lateinit var orderManager: OrderManager
 
-    @BindString(R.string.waiterhome_textView_waiterName)
-    String waiterString;
+    private val binding by viewBinding(FragmentWaiterHomeBinding::bind)
 
-    private List<Table> tables;
-
-    private void loadData() {
-        ConnectionManager.getInstance().sendWithAction(new MessageGet<>(Table.class), m -> {
-            try {
-                tables = new Message<Table>(m).getPayload();
-            } catch (MessageException e) {
-                e.printStackTrace();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                waiterManager.waiter.onEach { waiter ->
+                    binding.title.text = getString(R.string.waiterhome_textView_waiterName, waiter?.name ?: "not set")
+                }.launchIn(this)
             }
-        });
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.actionbar_waiter_home);
-        loadData();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_waiter_home, container, false);
-        ButterKnife.bind(this, view);
-        waiterName.setText(String.format(Locale.GERMAN, waiterString, waiterManager.getWaiter().getValue().getName()));
-        if(tables == null) {
-            loadData();
         }
-        return view;
+        binding.buttonChooseTable.setOnClickListener { createNewOrder() }
     }
 
-    @OnClick(R.id.waiterhome_button_createNewOrder)
-    public void createNewOrder() {
-        new MaterialDialog.Builder(getContext())
-                .title("Select a Table")
-                .items(tables)
-                .itemsCallbackSingleChoice(-1, (dialog, itemView, position, text) -> {
-                    if(position < 0 || position >= tables.size())
-                        return false;
-                    orderManager.createNew();
-                    orderManager.setTable(tables.get(position));
-                    NavHostFragment.findNavController(this).navigate(
-                            WaiterHomeFragmentDirections.actionWaiterHomeFragmentToWaiterProductCategoriesFragment()
-                    );
-                    return true;
-                })
-                .negativeText("Cancel")
-                .positiveText("Choose")
-                .build()
-                .show();
+    private fun createNewOrder() {
+        val tables = tableManager.allTables.value
+        MaterialDialog.Builder(requireContext())
+            .title("Select a Table")
+            .items(tables)
+            .itemsCallbackSingleChoice(-1) { _, _, position, _ ->
+                orderManager.createNew()
+                orderManager.table = tables[position]
+                NavHostFragment.findNavController(this).navigate(
+                    WaiterChooseTableFragmentDirections.actionWaiterHomeFragmentToWaiterProductCategoriesFragment()
+                )
+                true
+            }
+            .negativeText("Cancel")
+            .positiveText("Choose")
+            .build()
+            .show()
     }
 }
