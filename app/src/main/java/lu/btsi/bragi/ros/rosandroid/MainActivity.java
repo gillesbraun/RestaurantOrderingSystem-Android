@@ -6,28 +6,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import javax.inject.Inject;
 
-import dagger.hilt.EntryPoint;
 import dagger.hilt.android.AndroidEntryPoint;
-import dagger.hilt.android.HiltAndroidApp;
 import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
 import lu.btsi.bragi.ros.rosandroid.databinding.ActivityMainBinding;
 import lu.btsi.bragi.ros.rosandroid.waiter.ReviewOrderDialog;
@@ -38,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private NavController navController;
     private LanguageObserver languageObserver;
     private ActivityMainBinding binding;
+
+    @Inject ConnectionManager connectionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,16 +52,10 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.toolbar, navController, configuration);
         NavigationUI.setupActionBarWithNavController(this, navController, configuration);
 
-
-        //ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-        //        this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        //drawer.addDrawerListener(toggle);
-        //toggle.syncState();
-
         binding.fabOrderSubmit.setVisibility(View.GONE);
         binding.fabOrderSubmit.setOnClickListener(fabSendOrderPressed);
 
-        ConnectionManager.getInstance().initPreferences(this);
+        connectionManager.initPreferences(this);
     }
 
     @Override
@@ -80,19 +68,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         return navController.navigateUp() || super.onSupportNavigateUp();
     }
-
-    //@Override
-    //public void onBackPressed() {
-    //    new MaterialDialog.Builder(this)
-    //            .title(R.string.dialog_exit_title)
-    //            .positiveText(R.string.dialog_exit_yes)
-    //            .onPositive((dialog1, which) ->
-    //                    super.onBackPressed()
-    //            )
-    //            .negativeText(R.string.dialog_exit_no)
-    //            .build()
-    //            .show();
-    //}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -136,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, intent);
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null && scanResult.getContents() != null) {
-            ConnectionManager.getInstance().setHost(scanResult.getContents());
+            ConnectionManager.getInstance().connect(scanResult.getContents());
         }
     }
 

@@ -6,16 +6,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import org.java_websocket.exceptions.WebsocketNotConnectedException;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -24,9 +19,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import kotlinx.coroutines.flow.MutableStateFlow;
+import kotlinx.coroutines.flow.StateFlow;
+import kotlinx.coroutines.flow.StateFlowKt;
 import lu.btsi.bragi.ros.models.message.Message;
 import lu.btsi.bragi.ros.models.message.MessageType;
-import lu.btsi.bragi.ros.rosandroid.MainActivity;
 import lu.btsi.bragi.ros.rosandroid.R;
 
 /**
@@ -39,14 +36,18 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     private String host;
     private URI url;
     private Client client;
-    private boolean isConnected = false;
+
+    @Deprecated
     private final List<ConnectionCallback> connectionCallbackList = new ArrayList<>();
+
     private final Map<UUID, MessageCallback> callbackMap = new HashMap<>();
     private final List<BroadcastCallback> broadcastCallbacks = new ArrayList<>();
     private final LinkedBlockingQueue<Message<?>> unsentMessages = new LinkedBlockingQueue<>();
 
     private static ConnectionManager instance;
     private boolean tryReconnect = false;
+
+    private final MutableStateFlow<ConnectionState> _connectionState = StateFlowKt.MutableStateFlow(ConnectionState.Disconnected.INSTANCE);
 
     public static ConnectionManager getInstance() {
         if (instance == null) {
@@ -56,12 +57,13 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
     }
 
     public void initPreferences(Context context) {
-        instance.preferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        preferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         loadSettings();
     }
 
     @Inject ConnectionManager() {
         runQueue();
+        instance = this;
     }
 
     public void sendWithAction(Message message, MessageCallback messageCallback) {
@@ -115,9 +117,11 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
         if(host == null || url == null)
             return;
         if (client != null) {
+            client.close();
             client.setConnectionCallback(null);
             client.setMessageCallbackHandler(null);
         }
+        _connectionState.setValue(ConnectionState.Disconnected.INSTANCE);
         try {
             client = new Client(url);
             client.setConnectionCallback(this);
@@ -140,13 +144,13 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
         if(preferences != null) {
             String host = preferences.getString("host", null);
             if(host != null)
-                setHost(host);
+                connect(host);
         }
     }
 
     @Override
     public void connectionOpened() {
-        isConnected = true;
+        _connectionState.setValue(new ConnectionState.Connected(host));
         tryReconnect = true;
         for (ConnectionCallback connectionCallback : connectionCallbackList) {
             connectionCallback.connectionOpened();
@@ -155,7 +159,7 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
 
     @Override
     public void connectionClosed() {
-        isConnected = false;
+        _connectionState.setValue(ConnectionState.Disconnected.INSTANCE);
         for (ConnectionCallback connectionCallback : connectionCallbackList) {
             connectionCallback.connectionClosed();
         }
@@ -171,6 +175,7 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
 
     @Override
     public void connectionError(Exception e) {
+        _connectionState.setValue(new ConnectionState.Failed(e));
         for (ConnectionCallback connectionCallback : connectionCallbackList) {
             connectionCallback.connectionError(e);
         }
@@ -199,12 +204,11 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
         }
     }
 
-    public boolean isConnected() {
-        return isConnected;
+    public StateFlow<ConnectionState> getConnectionState() {
+        return _connectionState;
     }
 
-    public void setHost(String host) {
-        isConnected = false;
+    public void connect(String host) {
         tryReconnect = false;
         if(host == null)
             return;
@@ -233,10 +237,12 @@ public class ConnectionManager implements ConnectionCallback, MessageCallbackHan
         broadcastCallbacks.remove(broadcastCallback);
     }
 
+    @Deprecated
     public void addConnectionCallback(ConnectionCallback connectionCallback) {
         this.connectionCallbackList.add(connectionCallback);
     }
 
+    @Deprecated
     public void removeConnectionCallback(ConnectionCallback connectionCallback) {
         this.connectionCallbackList.remove(connectionCallback);
     }

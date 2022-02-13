@@ -1,142 +1,92 @@
-package lu.btsi.bragi.ros.rosandroid;
+package lu.btsi.bragi.ros.rosandroid.ui.home
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import android.text.InputType;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.zxing.integration.android.IntentIntegrator;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import lu.btsi.bragi.ros.rosandroid.connection.ConnectionCallback;
-import lu.btsi.bragi.ros.rosandroid.connection.ConnectionManager;
-
-import static lu.btsi.bragi.ros.rosandroid.R.id.home_textView_connection_status;
+import android.os.Bundle
+import android.text.InputType
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.afollestad.materialdialogs.MaterialDialog
+import com.google.zxing.integration.android.IntentIntegrator
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import lu.btsi.bragi.ros.rosandroid.MainActivity
+import lu.btsi.bragi.ros.rosandroid.OrderManager
+import lu.btsi.bragi.ros.rosandroid.R
+import lu.btsi.bragi.ros.rosandroid.connection.ConnectionState
+import lu.btsi.bragi.ros.rosandroid.databinding.FragmentHomeBinding
+import java.text.DateFormat
+import java.util.*
 
 /**
  * Created by gillesbraun on 13/03/2017.
  */
+@AndroidEntryPoint
+class HomeFragment : Fragment(R.layout.fragment_home) {
 
-public class HomeFragment extends Fragment implements ConnectionCallback {
-    @BindView(home_textView_connection_status)
-    TextView textViewConnectionStatus;
+    private val binding by viewBinding(FragmentHomeBinding::bind)
+    private val viewModel: HomeViewModel by viewModels()
 
-    @BindString(R.string.home_isconnected)
-    String strIsConnected;
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
 
-    @BindString(R.string.home_notconnected)
-    String strIsNotConnected;
+                viewModel.connectionState.onEach {
+                    updateStatus(it)
+                }.launchIn(this)
 
-    @BindString(R.string.home_dialog_hint)
-    String strHint;
-
-    private Handler handler;
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-        ButterKnife.bind(this, view);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ConnectionManager.getInstance().addConnectionCallback(this);
-        handler = new Handler();
-        runner.run();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        ConnectionManager.getInstance().removeConnectionCallback(this);
-        stopRunner();
-    }
-
-    private void updateStatus() {
-        ConnectionManager manager = ConnectionManager.getInstance();
-        if(manager.isConnected()) {
-            String remoteIPAdress = manager.getRemoteIPAdress();
-            textViewConnectionStatus.setText(getString(R.string.home_isconnected, remoteIPAdress));
-        }
-    }
-
-    @OnClick(R.id.home_button_connect_ip)
-    public void buttonConnectIPPressed() {
-        ConnectionManager manager = ConnectionManager.getInstance();
-        new MaterialDialog.Builder(getContext())
-                .title(R.string.home_dialog_title)
-                .inputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_CLASS_TEXT)
-                .input(strHint, manager.getHost(), false, (dialog, input) -> {
-                    manager.setHost(input.toString());
-                })
-                .show();
-    }
-
-    @OnClick(R.id.home_button_connect_barcode)
-    public void buttonConnectBarcodePressed() {
-        IntentIntegrator integrator = new IntentIntegrator(getActivity());
-        integrator.initiateScan();
-    }
-
-    private void stopRunner() {
-        handler.removeCallbacks(runner);
-    }
-
-    private Runnable runner = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                updateStatus();
-            } finally {
-                handler.postDelayed(runner, 500);
             }
         }
-    };
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        OrderManager.getInstance().clear();
-        ((MainActivity)getActivity()).updateFabVisibility();
+        binding.buttonConnectBarcode.setOnClickListener {
+            buttonConnectBarcodePressed()
+        }
+        binding.buttonConnectIp.setOnClickListener {
+            buttonConnectIPPressed()
+        }
     }
 
-    @Override
-    public void connectionOpened() {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            ConnectionManager manager = ConnectionManager.getInstance();
-            String remoteIPAdress = manager.getRemoteIPAdress();
-            textViewConnectionStatus.setText(String.format(Config.getInstance().getLocale(getContext()), strIsConnected, remoteIPAdress));
-        });
+    private fun updateStatus(state: ConnectionState) {
+        when(state) {
+            is ConnectionState.Connected -> {
+                binding.connectionStatus.text = getString(R.string.home_isconnected, state.host)
+            }
+            ConnectionState.Disconnected -> {
+                binding.connectionStatus.text = getString(R.string.home_isconnected, "not connected")
+            }
+            is ConnectionState.Failed -> {
+                val dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG)
+                val error = state.error.javaClass.simpleName + if (state.error.message != null) ": " + state.error.message else ""
+                binding.connectionStatus.text = getString(R.string.home_notconnected, dateFormat.format(Date())) + "\n$error"
+            }
+        }
     }
 
-    @Override
-    public void connectionClosed() {
-        new Handler(Looper.getMainLooper()).post(() -> {
-        });
+    private fun buttonConnectIPPressed() {
+        MaterialDialog.Builder(requireContext())
+            .title(R.string.home_dialog_title)
+            .inputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_CLASS_TEXT)
+            .input(
+                getString(R.string.home_dialog_hint),
+                viewModel.getHost(),
+                false
+            ) { _, input -> viewModel.connect(input.toString()) }
+            .show()
     }
 
-    @Override
-    public void connectionError(Exception e) {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
-            String error = e.getClass().getSimpleName() + (e.getMessage() != null ? ": " + e.getMessage() : "");
-            textViewConnectionStatus.setText(e + " " + String.format(Config.getInstance().getLocale(getContext()), strIsNotConnected, dateFormat.format(new Date())));
-        });
+    private fun buttonConnectBarcodePressed() {
+        val integrator = IntentIntegrator(activity)
+        integrator.initiateScan()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        OrderManager.getInstance().clear() // ?
+        (activity as MainActivity?)!!.updateFabVisibility()
     }
 }

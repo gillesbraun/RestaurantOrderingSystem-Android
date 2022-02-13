@@ -1,51 +1,29 @@
-package lu.btsi.bragi.ros.rosandroid.connection;
+package lu.btsi.bragi.ros.rosandroid.connection
 
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
-
-import java.net.URI;
+import org.java_websocket.client.WebSocketClient
+import org.java_websocket.handshake.ServerHandshake
+import java.net.URI
 
 /**
  * Created by gillesbraun on 13/03/2017.
  */
+class Client(serverURI: URI?) : WebSocketClient(serverURI) {
+    var connectionCallback: ConnectionManager? = null
+    var messageCallbackHandler: MessageCallbackHandler? = null
 
-public class Client extends WebSocketClient {
-    private ConnectionManager connectionCallback;
-    private MessageCallbackHandler messageCallbackHandler;
-
-    Client(URI serverURI) {
-        super(serverURI);
+    override fun onOpen(handshakedata: ServerHandshake) {
+        connectionCallback?.connectionOpened()
     }
 
-    @Override
-    public void onOpen(ServerHandshake handshakedata) {
-        connectionCallback.connectionOpened();
+    override fun onMessage(message: String) {
+        messageCallbackHandler?.handleMessage(message)
     }
 
-    @Override
-    public void onMessage(String message) {
-        messageCallbackHandler.handleMessage(message);
+    override fun onClose(code: Int, reason: String, remote: Boolean) {
+        connectionCallback?.connectionClosed()
     }
 
-    @Override
-    public void onClose(int code, String reason, boolean remote) {
-        connectionCallback.connectionClosed();
-    }
-
-    @Override
-    public void onError(Exception ex) {
-        connectionCallback.connectionError(ex);
-    }
-
-    void setConnectionCallback(ConnectionManager connectionCallback) {
-        this.connectionCallback = connectionCallback;
-    }
-
-    public void setMessageCallbackHandler(MessageCallbackHandler messageCallbackHandler) {
-        this.messageCallbackHandler = messageCallbackHandler;
-    }
-
-    public MessageCallbackHandler getMessageCallbackHandler() {
-        return messageCallbackHandler;
+    override fun onError(ex: Exception) {
+        connectionCallback?.connectionError(ex)
     }
 }

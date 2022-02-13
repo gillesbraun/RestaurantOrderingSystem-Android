@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@id/homeFragment"
-        android:name="lu.btsi.bragi.ros.rosandroid.HomeFragment"
+        android:name="lu.btsi.bragi.ros.rosandroid.ui.home.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
